@@ -156,7 +156,9 @@ fn search(host: String, queri: String, limit: usize) -> Result<Search, Error> {
                               query = queri);
     let mut search: Search = query(request_url)?;
     // TODO: implement limit in Hydra API
-    search.builds = search.builds[0..limit].to_vec();
+    if search.builds.len() > limit {
+        search.builds = search.builds[0..limit].to_vec();
+    }
     debug!("{:?}", search);
     Ok(search)
 }
