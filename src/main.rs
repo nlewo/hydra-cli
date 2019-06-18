@@ -170,6 +170,7 @@ fn main() -> Result<(), Error> {
         .arg(Arg::with_name("host")
              .short("H")
              .default_value("https://hydra.nixos.org")
+             .env("HYDRA_HOST")
              .help("Hydra host URL"))
         .subcommand(SubCommand::with_name("search")
                     .about("Search by output paths")
