@@ -167,7 +167,7 @@ fn main() -> Result<(), Error> {
     let matches = App::new("hydra-cli")
         .version("0.1")
         .about("CLI Hydra client")
-        .author("Antoine Eiche")
+        .author("lewo")
         .after_help("A client to query Hydra through its JSON API.")
         .arg(Arg::with_name("host")
              .short("H")

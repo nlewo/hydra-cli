@@ -1,9 +1,16 @@
 # `hydra-cli`
 
-## hydra-cli
+**Warning: This project is WIP and only the latest Hydra revision is supported.**
+
+## Install
+
+    nix-env -f https://github.com/nlewo/hydra-cli/archive/master.tar.gz -iA hydra-cli
+
+
+## Usage `hydra-cli`
 
     hydra-cli 0.1
-    Antoine Eiche
+    lewo
     CLI Hydra client
     
     USAGE:
@@ -14,7 +21,7 @@
         -V, --version    Prints version information
     
     OPTIONS:
-        -H <host>        Hydra host URL [default: https://hydra.nixos.org]
+        -H <host>        Hydra host URL [env: HYDRA_HOST=]  [default: https://hydra.nixos.org]
     
     SUBCOMMANDS:
         help         Prints this message or the help of the given subcommand(s)
@@ -23,7 +30,7 @@
     
     A client to query Hydra through its JSON API.
 
-## Command 
+### Command `hydra-cli reproduce`
 
     hydra-cli-reproduce 
     Retrieve information to reproduce an output path
@@ -39,7 +46,7 @@
     ARGS:
         <QUERY>    Piece of an output path (hash, name,...)
 
-## Command 
+### Command `hydra-cli search`
 
     hydra-cli-search 
     Search by output paths
