@@ -1,0 +1,89 @@
+{
+  "builds": [
+    {
+      "buildstatus": 2,
+      "jobset": "trunk",
+      "jobsetevals": [
+        1523141,
+        1523060,
+        1523028,
+        1523021,
+        1523006,
+        1522960,
+        1522914,
+        1522875,
+        1522829,
+        1522819,
+        1522786,
+        1522735,
+        1522658,
+        1522611,
+        1522605,
+        1522575,
+        1522529,
+        1522491,
+        1522453,
+        1522436,
+        1522405,
+        1522394,
+        1522367,
+        1522333,
+        1522292,
+        1522272,
+        1522256,
+        1522230,
+        1522201,
+        1522177
+      ],
+      "system": "x86_64-darwin",
+      "buildmetrics": {},
+      "project": "nixpkgs",
+      "drvpath": "/nix/store/ppihpm4vvkcr49m7nr9q8ikxpfgkx005-afew-1.3.0.drv",
+      "starttime": 1559613988,
+      "id": 94250155,
+      "buildoutputs": {
+        "out": {
+          "path": "/nix/store/dx2i55cj2avkl1hhigz08kv5iy2r62k7-afew-1.3.0"
+        }
+      },
+      "finished": 1,
+      "stoptime": 1559614425,
+      "releasename": null,
+      "nixname": "afew-1.3.0",
+      "buildproducts": {},
+      "timestamp": 1559122416,
+      "job": "afew.x86_64-darwin",
+      "priority": 100
+    },
+    {
+      "priority": 100,
+      "job": "afew.x86_64-darwin",
+      "timestamp": 1558862192,
+      "buildproducts": {},
+      "nixname": "afew-1.3.0",
+      "releasename": null,
+      "finished": 1,
+      "stoptime": 1559053538,
+      "buildoutputs": {
+        "out": {
+          "path": "/nix/store/dx2i55cj2avkl1hhigz08kv5iy2r62k7-afew-1.3.0"
+        }
+      },
+      "id": 94098485,
+      "starttime": 1559053054,
+      "drvpath": "/nix/store/ppihpm4vvkcr49m7nr9q8ikxpfgkx005-afew-1.3.0.drv",
+      "project": "nixpkgs",
+      "buildmetrics": {},
+      "system": "x86_64-darwin",
+      "jobsetevals": [
+        1521962,
+        1521636
+      ],
+      "buildstatus": 2,
+      "jobset": "staging-next"
+    }
+  ],
+  "buildsdrv": [],
+  "jobsets": [],
+  "projects": []
+}

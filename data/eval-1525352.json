@@ -1,0 +1,52 @@
+{
+  "jobsetevalinputs": {
+    "nix": {
+      "value": null,
+      "type": "git",
+      "revision": "26bc876ae6e7ceff8b37ba5c2c1043ce216cf384",
+      "dependency": null,
+      "uri": "https://github.com/NixOS/nix.git"
+    },
+    "officialRelease": {
+      "uri": null,
+      "dependency": null,
+      "revision": null,
+      "value": "false",
+      "type": "boolean"
+    },
+    "nixpkgs": {
+      "revision": "a7e559a5504572008567383c3dc8e142fa7a8633",
+      "dependency": null,
+      "uri": "https://github.com/NixOS/nixpkgs-channels.git",
+      "type": "git",
+      "value": null
+    }
+  },
+  "id": 1525352,
+  "hasnewbuilds": 1,
+  "builds": [
+    94858417,
+    94858423,
+    94858416,
+    94858427,
+    94858420,
+    94858413,
+    94858426,
+    94858433,
+    94858430,
+    94858415,
+    94858418,
+    94858412,
+    94858424,
+    94858425,
+    94858431,
+    94858428,
+    94858422,
+    94858414,
+    94858434,
+    94858419,
+    94858421,
+    94858432,
+    94858429
+  ]
+}
