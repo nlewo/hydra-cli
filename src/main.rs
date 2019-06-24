@@ -12,6 +12,10 @@ use chrono::{NaiveDateTime};
 extern crate log;
 use serde::de::DeserializeOwned;
 
+#[macro_use] extern crate prettytable;
+use prettytable::{Table, Row, Cell};
+use prettytable::format;
+
 #[cfg(test)]
 use std::fs::File;
 #[cfg(test)]
@@ -92,6 +96,16 @@ struct Reproduce {
     jobset: Jobset,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+struct JobsetOverview {
+    nrscheduled: i64,
+    nrtotal: i64,
+    nrsucceeded: i64,
+    project: String,
+    name: String,
+    nrfailed: i64,
+}
+
 fn build_pretty_print(b: &Build) {
     println!("{:14} {}/{}/{}", "Job", b.project, b.jobset, b.job);
     println!("{:14} {}", "Finished at",
@@ -141,6 +155,14 @@ fn eval(host: String, number: i64) -> Result<Eval, Error> {
     Ok(res)
 }
 
+fn jobsetOverview(host: String, project: String) -> Result<Vec<JobsetOverview>, Error> {
+    let request_url = format!("{host}/api/jobsets?project={project}",
+                              host = host,
+                              project = project);
+    let res: Vec<JobsetOverview> = query(request_url)?;
+    Ok(res)
+}
+
 fn jobset(host: String, project: String, jobset: String) -> Result<Jobset, Error> {
     let request_url = format!("{host}/jobset/{project}/{jobset}",
                               host = host,
@@ -187,6 +209,14 @@ fn main() -> Result<(), Error> {
                     .arg(Arg::with_name("QUERY")
                          .required(true)
                          .help("Piece of an output path (hash, name,...)"))
+                    .arg(Arg::with_name("json")
+                         .short("j")
+                         .help("JSON output")))
+        .subcommand(SubCommand::with_name("project")
+                    .about("Get information of a project")
+                    .arg(Arg::with_name("PROJECT")
+                         .required(true)
+                         .help("A project name"))
                     .arg(Arg::with_name("json")
                          .short("j")
                          .help("JSON output")))
@@ -241,6 +271,28 @@ fn main() -> Result<(), Error> {
             println!("Inputs:");
             evaluation_pretty_print(&reproduce.eval);
             println!("{:14} {}/build/{}", "Hydra url", host, reproduce.build.id);
+        }
+    } else if let Some(matches) = matches.subcommand_matches("project") {
+        let project = jobsetOverview(host.to_string(), matches.value_of("PROJECT").unwrap().to_string())?;
+        if matches.is_present("json") {
+            let res = serde_json::to_string(&project).unwrap();
+            println!("{}", res);
+        } else {
+            let mut table = table!(["Jobset", "Succeeded", "Scheduled", "Failed"]);
+            table.set_format(*format::consts::FORMAT_CLEAN);
+            for j in project {
+                let mut nrfailed = j.nrfailed.to_string();
+                let mut nrscheduled = j.nrscheduled.to_string();
+                let mut name = j.name;
+                if j.nrfailed == 0 {
+                    nrfailed = "".to_string();
+                }
+                if j.nrscheduled == 0 {
+                    nrscheduled = "".to_string();
+                }
+                table.add_row(row![name, j.nrsucceeded, nrscheduled, nrfailed]);
+            }
+            table.printstd();
         }
     }
     Ok(())
