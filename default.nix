@@ -10,7 +10,7 @@ rec {
     version = "0.1";
     src = nix-gitignore.gitignoreSource [ "default.nix" "README*" ] ./.;
     buildInputs = [ pkgconfig openssl ];
-    cargoSha256 = "1zfrv0psgg9g7dbg5p2pl68v1zigfipi6k6j137bvz27qfzdn540";
+    cargoSha256 = "11qj50rx2x9hrva7m0gnhp8sj5283z320w01qb153zpgzf9d7nrs";
     meta = with stdenv.lib; {
       description = "The Hydra CLI";
       homepage = https://github.com/nlewo/hydra-cli;
