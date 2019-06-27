@@ -25,10 +25,27 @@
     
     SUBCOMMANDS:
         help         Prints this message or the help of the given subcommand(s)
+        project      Get information of a project
         reproduce    Retrieve information to reproduce an output path
         search       Search by output paths
     
     A client to query Hydra through its JSON API.
+
+### Command `hydra-cli project`
+
+    hydra-cli-project 
+    Get information of a project
+    
+    USAGE:
+        hydra-cli project [FLAGS] <PROJECT>
+    
+    FLAGS:
+        -h, --help       Prints help information
+        -j               JSON output
+        -V, --version    Prints version information
+    
+    ARGS:
+        <PROJECT>    A project name
 
 ### Command `hydra-cli reproduce`
 
