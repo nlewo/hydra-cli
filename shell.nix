@@ -1,20 +1,18 @@
-{ nixpkgs ? (import ./nix/sources.nix).nixpkgs
-, overlay ? (import ./nix/sources.nix).nixpkgs-mozilla
+{ pkgs ? import ./nix/nixpkgs.nix {}
+, devBuild ? true
 }:
 
 let
-  nixpkgs-mozilla = import (builtins.fetchTarball (overlay.url));
-  pkgs = import nixpkgs { overlays = [ nixpkgs-mozilla ]; };
   rustChannel = pkgs.latest.rustChannels.stable;
-  rustChannelNightly = pkgs.latest.rustChannels.nightly;
+  devRust = [ rustChannel.rust ];
+  prodRust = [ pkgs.rustc pkgs.cargo ];
 in
   pkgs.mkShell {
     buildInputs = [ 
-      rustChannel.rust
       pkgs.rustfmt
       pkgs.direnv
       pkgs.pkg-config
       pkgs.openssl
-    ];
+    ] ++ (if devBuild then devRust else prodRust);
 
   }
