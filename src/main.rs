@@ -15,7 +15,6 @@ use serde::de::DeserializeOwned;
 #[macro_use]
 extern crate prettytable;
 use prettytable::format;
-use prettytable::{Cell, Row, Table};
 
 #[cfg(test)]
 use std::fs::File;
@@ -32,7 +31,7 @@ fn builds() -> Result<(), std::io::Error> {
 
     for b in s.builds {
         build_pretty_print(&b);
-        println!("");
+        println!();
     }
     Ok(())
 }
@@ -156,7 +155,7 @@ fn eval(host: String, number: i64) -> Result<Eval, Error> {
     Ok(res)
 }
 
-fn jobsetOverview(host: String, project: String) -> Result<Vec<JobsetOverview>, Error> {
+fn jobset_overview(host: String, project: String) -> Result<Vec<JobsetOverview>, Error> {
     let request_url = format!(
         "{host}/api/jobsets?project={project}",
         host = host,
@@ -257,7 +256,7 @@ fn main() -> Result<(), Error> {
             matches.value_of("QUERY").unwrap().to_string(),
             1,
         )?;
-        if search.builds.len() == 0 {
+        if search.builds.is_empty() {
             println!("No builds found. Exiting.");
             return Ok(());
         } else if search.builds.len() > 1 {
@@ -274,8 +273,8 @@ fn main() -> Result<(), Error> {
         )?;
         let reproduce = Reproduce {
             build: search.builds.swap_remove(0),
-            eval: eval,
-            jobset: jobset,
+            eval,
+            jobset,
         };
 
         if matches.is_present("json") {
@@ -296,7 +295,7 @@ fn main() -> Result<(), Error> {
             println!("{:14} {}/build/{}", "Hydra url", host, reproduce.build.id);
         }
     } else if let Some(matches) = matches.subcommand_matches("project") {
-        let project = jobsetOverview(
+        let project = jobset_overview(
             host.to_string(),
             matches.value_of("PROJECT").unwrap().to_string(),
         )?;
@@ -309,7 +308,7 @@ fn main() -> Result<(), Error> {
             for j in project {
                 let mut nrfailed = j.nrfailed.to_string();
                 let mut nrscheduled = j.nrscheduled.to_string();
-                let mut name = j.name;
+                let name = j.name;
                 if j.nrfailed == 0 {
                     nrfailed = "".to_string();
                 }
