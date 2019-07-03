@@ -1,9 +1,6 @@
-{ nixpkgs ? (import ./nix/sources.nix).nixpkgs
-, pkgs ? import nixpkgs {}
-}:
+{ pkgs ? import ./nix/nixpkgs.nix {} }:
 
 with pkgs;
-
 rec {
   hydra-cli = rustPlatform.buildRustPackage rec {
     name = "hydra-cli-${version}";
