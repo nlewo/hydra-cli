@@ -13,6 +13,7 @@ in
       pkgs.direnv
       pkgs.pkg-config
       pkgs.openssl
+      pkgs.carnix
     ] ++ (if devBuild then devRust else prodRust);
 
   }
