@@ -1,20 +1,21 @@
-extern crate clap; 
-extern crate serde_derive;
+extern crate clap;
 extern crate reqwest;
+extern crate serde_derive;
+use clap::{App, Arg, SubCommand};
 use reqwest::Error;
-use serde_json::{Value};
-use clap::{Arg, App, SubCommand};
-use std::collections::{HashMap};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use std::collections::HashMap;
 extern crate chrono;
-use chrono::{NaiveDateTime};
+use chrono::NaiveDateTime;
 #[macro_use]
 extern crate log;
 use serde::de::DeserializeOwned;
 
-#[macro_use] extern crate prettytable;
-use prettytable::{Table, Row, Cell};
+#[macro_use]
+extern crate prettytable;
 use prettytable::format;
+use prettytable::{Cell, Row, Table};
 
 #[cfg(test)]
 use std::fs::File;
@@ -23,7 +24,7 @@ use std::io::prelude::*;
 
 #[test]
 // This is useful for developping purpose (this is not a test yet).
-fn builds() -> Result<(), std::io::Error>{
+fn builds() -> Result<(), std::io::Error> {
     let mut file = File::open("data/search-build.json")?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
@@ -38,7 +39,7 @@ fn builds() -> Result<(), std::io::Error>{
 
 #[test]
 // This is useful for developping purpose (this is not a test yet).
-fn test_eval() -> Result<(), std::io::Error>{
+fn test_eval() -> Result<(), std::io::Error> {
     let mut file = File::open("data/eval-1525352.json")?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
@@ -53,7 +54,7 @@ struct Input {
     #[serde(rename = "type")]
     input_type: String,
     revision: Option<String>,
-    uri:Option<String>,
+    uri: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -69,7 +70,7 @@ struct Jobset {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Path {
-    path: String
+    path: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -78,7 +79,7 @@ struct Build {
     project: String,
     drvpath: String,
     job: String,
-    jobset:String,
+    jobset: String,
     buildoutputs: HashMap<String, Path>,
     stoptime: i64,
     jobsetevals: Vec<i64>,
@@ -108,8 +109,10 @@ struct JobsetOverview {
 
 fn build_pretty_print(b: &Build) {
     println!("{:14} {}/{}/{}", "Job", b.project, b.jobset, b.job);
-    println!("{:14} {}", "Finished at",
-             NaiveDateTime::from_timestamp(b.stoptime, 0),
+    println!(
+        "{:14} {}",
+        "Finished at",
+        NaiveDateTime::from_timestamp(b.stoptime, 0),
     );
     println!("{:14} {}", "Derviation", b.drvpath);
     println!("{:14}", "Build outputs");
@@ -141,41 +144,41 @@ fn query<T: DeserializeOwned>(request_url: String) -> Result<T, Error> {
         .get(&request_url)
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .send()?;
-    
+
     let v: Value = res.json()?;
     let res = serde_json::from_value(v).unwrap();
     Ok(res)
 }
 
 fn eval(host: String, number: i64) -> Result<Eval, Error> {
-    let request_url = format!("{host}/eval/{number}",
-                              host = host,
-                              number = number);
+    let request_url = format!("{host}/eval/{number}", host = host, number = number);
     let res: Eval = query(request_url)?;
     Ok(res)
 }
 
 fn jobsetOverview(host: String, project: String) -> Result<Vec<JobsetOverview>, Error> {
-    let request_url = format!("{host}/api/jobsets?project={project}",
-                              host = host,
-                              project = project);
+    let request_url = format!(
+        "{host}/api/jobsets?project={project}",
+        host = host,
+        project = project
+    );
     let res: Vec<JobsetOverview> = query(request_url)?;
     Ok(res)
 }
 
 fn jobset(host: String, project: String, jobset: String) -> Result<Jobset, Error> {
-    let request_url = format!("{host}/jobset/{project}/{jobset}",
-                              host = host,
-                              project = project,
-                              jobset = jobset);
+    let request_url = format!(
+        "{host}/jobset/{project}/{jobset}",
+        host = host,
+        project = project,
+        jobset = jobset
+    );
     let res: Jobset = query(request_url)?;
     Ok(res)
 }
 
 fn search(host: String, queri: String, limit: usize) -> Result<Search, Error> {
-    let request_url = format!("{host}/search?query={query}",
-                              host = host,
-                              query = queri);
+    let request_url = format!("{host}/search?query={query}", host = host, query = queri);
     let mut search: Search = query(request_url)?;
     // TODO: implement limit in Hydra API
     if search.builds.len() > limit {
@@ -185,70 +188,90 @@ fn search(host: String, queri: String, limit: usize) -> Result<Search, Error> {
     Ok(search)
 }
 
-fn main() -> Result<(), Error> { 
+fn main() -> Result<(), Error> {
     let matches = App::new("hydra-cli")
         .version("0.1")
         .about("CLI Hydra client")
         .author("lewo")
         .after_help("A client to query Hydra through its JSON API.")
-        .arg(Arg::with_name("host")
-             .short("H")
-             .default_value("https://hydra.nixos.org")
-             .env("HYDRA_HOST")
-             .help("Hydra host URL"))
-        .subcommand(SubCommand::with_name("search")
-                    .about("Search by output paths")
-                    .arg(Arg::with_name("QUERY")
-                         .required(true)
-                         .help("Piece of an output path (hash, name,...)"))
-                    .arg(Arg::with_name("limit")
-                         .default_value("10")
-                         .help("How many results to return")))
-        .subcommand(SubCommand::with_name("reproduce")
-                    .about("Retrieve information to reproduce an output path")
-                    .arg(Arg::with_name("QUERY")
-                         .required(true)
-                         .help("Piece of an output path (hash, name,...)"))
-                    .arg(Arg::with_name("json")
-                         .short("j")
-                         .help("JSON output")))
-        .subcommand(SubCommand::with_name("project")
-                    .about("Get information of a project")
-                    .arg(Arg::with_name("PROJECT")
-                         .required(true)
-                         .help("A project name"))
-                    .arg(Arg::with_name("json")
-                         .short("j")
-                         .help("JSON output")))
+        .arg(
+            Arg::with_name("host")
+                .short("H")
+                .default_value("https://hydra.nixos.org")
+                .env("HYDRA_HOST")
+                .help("Hydra host URL"),
+        )
+        .subcommand(
+            SubCommand::with_name("search")
+                .about("Search by output paths")
+                .arg(
+                    Arg::with_name("QUERY")
+                        .required(true)
+                        .help("Piece of an output path (hash, name,...)"),
+                )
+                .arg(
+                    Arg::with_name("limit")
+                        .default_value("10")
+                        .help("How many results to return"),
+                ),
+        )
+        .subcommand(
+            SubCommand::with_name("reproduce")
+                .about("Retrieve information to reproduce an output path")
+                .arg(
+                    Arg::with_name("QUERY")
+                        .required(true)
+                        .help("Piece of an output path (hash, name,...)"),
+                )
+                .arg(Arg::with_name("json").short("j").help("JSON output")),
+        )
+        .subcommand(
+            SubCommand::with_name("project")
+                .about("Get information of a project")
+                .arg(
+                    Arg::with_name("PROJECT")
+                        .required(true)
+                        .help("A project name"),
+                )
+                .arg(Arg::with_name("json").short("j").help("JSON output")),
+        )
         .get_matches();
-    
+
     let host = matches.value_of("host").unwrap();
     debug!("Host: {}", host);
 
     if let Some(matches) = matches.subcommand_matches("search") {
         let limit = matches.value_of("limit").unwrap().parse().unwrap();
-        let search = search(host.to_string(),
-                            matches.value_of("QUERY").unwrap().to_string(),
-                            limit)?;
+        let search = search(
+            host.to_string(),
+            matches.value_of("QUERY").unwrap().to_string(),
+            limit,
+        )?;
         for b in search.builds {
             build_pretty_print(&b);
             println!();
         }
-    }
-    else if let Some(matches) = matches.subcommand_matches("reproduce") {
-        let mut search = search(host.to_string(), matches.value_of("QUERY").unwrap().to_string(), 1)?;
+    } else if let Some(matches) = matches.subcommand_matches("reproduce") {
+        let mut search = search(
+            host.to_string(),
+            matches.value_of("QUERY").unwrap().to_string(),
+            1,
+        )?;
         if search.builds.len() == 0 {
             println!("No builds found. Exiting.");
-            return Ok(())
+            return Ok(());
+        } else if search.builds.len() > 1 {
+            eprintln!(
+                "Warning: the query matches {} builds, considering the first one.",
+                search.builds.len()
+            );
         }
-        else if search.builds.len() > 1 {
-            eprintln!("Warning: the query matches {} builds, considering the first one.", search.builds.len());
-        }
-        let eval = eval(host.to_string(),
-                        search.builds[0].jobsetevals[0])?;
-        let jobset = jobset( host.to_string(),
-                             search.builds[0].project.to_string(),
-                             search.builds[0].jobset.to_string())?;
+        let eval = eval(host.to_string(), search.builds[0].jobsetevals[0])?;
+        let jobset = jobset(
+            host.to_string(),
+            search.builds[0].project.to_string(),
+            search.builds[0].jobset.to_string(),
+        )?;
         let reproduce = Reproduce {
             build: search.builds.swap_remove(0),
             eval: eval,
@@ -267,13 +290,16 @@ fn main() -> Result<(), Error> {
             }
             println!("{:14} {}", "Attribute name", reproduce.build.job);
             println!("{:14} {}", "Nix expr path", reproduce.jobset.nixexprpath);
-            
+
             println!("Inputs:");
             evaluation_pretty_print(&reproduce.eval);
             println!("{:14} {}/build/{}", "Hydra url", host, reproduce.build.id);
         }
     } else if let Some(matches) = matches.subcommand_matches("project") {
-        let project = jobsetOverview(host.to_string(), matches.value_of("PROJECT").unwrap().to_string())?;
+        let project = jobsetOverview(
+            host.to_string(),
+            matches.value_of("PROJECT").unwrap().to_string(),
+        )?;
         if matches.is_present("json") {
             let res = serde_json::to_string(&project).unwrap();
             println!("{}", res);
