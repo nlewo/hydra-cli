@@ -1,21 +1,19 @@
 extern crate hydra_cli;
-
-use hydra_cli::hydra::Reproduce;
-use hydra_cli::pretty::{build_pretty_print, evaluation_pretty_print};
-use hydra_cli::query::{eval, jobset, jobsetOverview, search};
-
-use clap::{App, Arg, SubCommand};
-use reqwest::Error;
-
 #[macro_use]
 extern crate log;
-
 #[macro_use]
 extern crate prettytable;
+
+use clap::{App, Arg, SubCommand};
+use hydra_cli::hydra::Reproduce;
+use hydra_cli::ops::{project, reproduce, search};
+use hydra_cli::pretty::{build_pretty_print, evaluation_pretty_print};
+use hydra_cli::query::{eval, jobset, jobsetOverview, search};
 use prettytable::format;
+use reqwest::Error;
 
 fn main() -> Result<(), Error> {
-    let matches = App::new("hydra-cli")
+    let app = App::new("hydra-cli")
         .version("0.1")
         .about("CLI Hydra client")
         .author("lewo")
@@ -60,92 +58,23 @@ fn main() -> Result<(), Error> {
                         .help("A project name"),
                 )
                 .arg(Arg::with_name("json").short("j").help("JSON output")),
-        )
-        .get_matches();
+        );
 
+    let matches = app.get_matches();
     let host = matches.value_of("host").unwrap();
-    debug!("Host: {}", host);
+    let _ = match matches.subcommand() {
+        ("search", Some(args)) => search::run(
+            host,
+            args.value_of("QUERY").unwrap(),
+            args.value_of("limit").unwrap().parse().unwrap(),
+        ),
 
-    if let Some(matches) = matches.subcommand_matches("search") {
-        let limit = matches.value_of("limit").unwrap().parse().unwrap();
-        let search = search(
-            host.to_string(),
-            matches.value_of("QUERY").unwrap().to_string(),
-            limit,
-        )?;
-        for b in search.builds {
-            build_pretty_print(&b);
-            println!();
-        }
-    } else if let Some(matches) = matches.subcommand_matches("reproduce") {
-        let mut search = search(
-            host.to_string(),
-            matches.value_of("QUERY").unwrap().to_string(),
-            1,
-        )?;
-        if search.builds.is_empty() {
-            println!("No builds found. Exiting.");
-            return Ok(());
-        } else if search.builds.len() > 1 {
-            eprintln!(
-                "Warning: the query matches {} builds, considering the first one.",
-                search.builds.len()
-            );
-        }
-        let eval = eval(host.to_string(), search.builds[0].jobsetevals[0])?;
-        let jobset = jobset(
-            host.to_string(),
-            search.builds[0].project.to_string(),
-            search.builds[0].jobset.to_string(),
-        )?;
-        let reproduce = Reproduce {
-            build: search.builds.swap_remove(0),
-            eval,
-            jobset,
-        };
+        ("reproducible", Some(args)) => reproduce::run(host, args.value_of("QUERY").unwrap()),
 
-        if matches.is_present("json") {
-            let res = serde_json::to_string(&reproduce).unwrap();
-            println!("{}", res);
-        } else {
-            build_pretty_print(&reproduce.build);
-            let input = &reproduce.eval.jobsetevalinputs[&reproduce.jobset.nixexprinput];
-            if input.input_type == "git" {
-                println!("{:14} {}", "Repository", input.uri.as_ref().unwrap());
-                println!("{:14} {}", "Revision", input.revision.as_ref().unwrap());
-            }
-            println!("{:14} {}", "Attribute name", reproduce.build.job);
-            println!("{:14} {}", "Nix expr path", reproduce.jobset.nixexprpath);
+        ("project", Some(args)) => project::run(host, args.value_of("PROJECT").unwrap()),
 
-            println!("Inputs:");
-            evaluation_pretty_print(&reproduce.eval);
-            println!("{:14} {}/build/{}", "Hydra url", host, reproduce.build.id);
-        }
-    } else if let Some(matches) = matches.subcommand_matches("project") {
-        let project = jobsetOverview(
-            host.to_string(),
-            matches.value_of("PROJECT").unwrap().to_string(),
-        )?;
-        if matches.is_present("json") {
-            let res = serde_json::to_string(&project).unwrap();
-            println!("{}", res);
-        } else {
-            let mut table = table!(["Jobset", "Succeeded", "Scheduled", "Failed"]);
-            table.set_format(*format::consts::FORMAT_CLEAN);
-            for j in project {
-                let mut nrfailed = j.nrfailed.to_string();
-                let mut nrscheduled = j.nrscheduled.to_string();
-                let name = j.name;
-                if j.nrfailed == 0 {
-                    nrfailed = "".to_string();
-                }
-                if j.nrscheduled == 0 {
-                    nrscheduled = "".to_string();
-                }
-                table.add_row(row![name, j.nrsucceeded, nrscheduled, nrfailed]);
-            }
-            table.printstd();
-        }
-    }
+        _ => Ok(()),
+    };
+
     Ok(())
 }

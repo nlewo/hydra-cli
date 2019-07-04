@@ -7,5 +7,6 @@ extern crate serde_derive;
 extern crate log;
 
 pub mod hydra;
+pub mod ops;
 pub mod pretty;
 pub mod query;

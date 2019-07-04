@@ -43,7 +43,7 @@ pub fn jobset(host: String, project: String, jobset: String) -> Result<Jobset, E
     Ok(res)
 }
 
-pub fn search(host: String, queri: String, limit: usize) -> Result<Search, Error> {
+pub fn search(host: &str, queri: &str, limit: usize) -> Result<Search, Error> {
     let request_url = format!("{host}/search?query={query}", host = host, query = queri);
     let mut search: Search = query(request_url)?;
     // TODO: implement limit in Hydra API
