@@ -4,49 +4,15 @@ use hydra_cli::hydra::Reproduce;
 use hydra_cli::pretty::{build_pretty_print, evaluation_pretty_print};
 use hydra_cli::query::{eval, jobset, jobsetOverview, search};
 
-extern crate clap;
-extern crate reqwest;
-
 use clap::{App, Arg, SubCommand};
 use reqwest::Error;
+
 #[macro_use]
 extern crate log;
 
 #[macro_use]
 extern crate prettytable;
 use prettytable::format;
-use serde_json::Value;
-
-#[cfg(test)]
-use std::fs::File;
-#[cfg(test)]
-use std::io::prelude::*;
-
-#[test]
-// This is useful for developping purpose (this is not a test yet).
-fn builds() -> Result<(), std::io::Error> {
-    let mut file = File::open("data/search-build.json")?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    let s: Search = serde_json::from_str(&contents)?;
-
-    for b in s.builds {
-        build_pretty_print(&b);
-        println!();
-    }
-    Ok(())
-}
-
-#[test]
-// This is useful for developping purpose (this is not a test yet).
-fn test_eval() -> Result<(), std::io::Error> {
-    let mut file = File::open("data/eval-1525352.json")?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    let e: Eval = serde_json::from_str(&contents)?;
-    evaluation_pretty_print(&e);
-    Ok(())
-}
 
 fn main() -> Result<(), Error> {
     let matches = App::new("hydra-cli")
