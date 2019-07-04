@@ -1,7 +1,8 @@
 extern crate hydra_cli;
 
-use hydra_cli::hydra::{Eval, Jobset, JobsetOverview, Reproduce, Search};
+use hydra_cli::hydra::Reproduce;
 use hydra_cli::pretty::{build_pretty_print, evaluation_pretty_print};
+use hydra_cli::query::{eval, jobset, jobsetOverview, search};
 
 extern crate clap;
 extern crate reqwest;
@@ -15,7 +16,7 @@ use serde::de::DeserializeOwned;
 #[macro_use]
 extern crate prettytable;
 use prettytable::format;
-pub use serde_json::Value;
+use serde_json::Value;
 
 #[cfg(test)]
 use std::fs::File;
@@ -46,57 +47,6 @@ fn test_eval() -> Result<(), std::io::Error> {
     let e: Eval = serde_json::from_str(&contents)?;
     evaluation_pretty_print(&e);
     Ok(())
-}
-
-fn query<T: DeserializeOwned>(request_url: String) -> Result<T, Error> {
-    debug!("Request url: {}", request_url);
-    let client = reqwest::Client::new();
-    let mut res = client
-        .get(&request_url)
-        .header(reqwest::header::CONTENT_TYPE, "application/json")
-        .send()?;
-
-    let v: Value = res.json()?;
-    let res = serde_json::from_value(v).unwrap();
-    Ok(res)
-}
-
-fn eval(host: String, number: i64) -> Result<Eval, Error> {
-    let request_url = format!("{host}/eval/{number}", host = host, number = number);
-    let res: Eval = query(request_url)?;
-    Ok(res)
-}
-
-fn jobsetOverview(host: String, project: String) -> Result<Vec<JobsetOverview>, Error> {
-    let request_url = format!(
-        "{host}/api/jobsets?project={project}",
-        host = host,
-        project = project
-    );
-    let res: Vec<JobsetOverview> = query(request_url)?;
-    Ok(res)
-}
-
-fn jobset(host: String, project: String, jobset: String) -> Result<Jobset, Error> {
-    let request_url = format!(
-        "{host}/jobset/{project}/{jobset}",
-        host = host,
-        project = project,
-        jobset = jobset
-    );
-    let res: Jobset = query(request_url)?;
-    Ok(res)
-}
-
-fn search(host: String, queri: String, limit: usize) -> Result<Search, Error> {
-    let request_url = format!("{host}/search?query={query}", host = host, query = queri);
-    let mut search: Search = query(request_url)?;
-    // TODO: implement limit in Hydra API
-    if search.builds.len() > limit {
-        search.builds = search.builds[0..limit].to_vec();
-    }
-    debug!("{:?}", search);
-    Ok(search)
 }
 
 fn main() -> Result<(), Error> {
