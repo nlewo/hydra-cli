@@ -2,19 +2,10 @@
 
 with pkgs;
 rec {
-  hydra-cli = rustPlatform.buildRustPackage rec {
-    name = "hydra-cli-${version}";
-    version = "0.1";
-    src = nix-gitignore.gitignoreSource [ "default.nix" "README*" ] ./.;
-    buildInputs = [ pkgconfig openssl ];
-    cargoSha256 = "11qj50rx2x9hrva7m0gnhp8sj5283z320w01qb153zpgzf9d7nrs";
-    meta = with stdenv.lib; {
-      description = "The Hydra CLI";
-      homepage = https://github.com/nlewo/hydra-cli;
-      license = licenses.mit;
-      platforms = platforms.all;
-    };
-  };
+  hydra-cli = ((pkgs.callPackage ./Cargo.nix {
+    cratesIO = pkgs.callPackage ./crates-io.nix {};
+  }).hydra_cli {});
+
   readme = pkgs.runCommand "generate-readme" { buildInputs = [ hydra-cli ]; }
   ''
     cat ${./README.header.md} > $out
