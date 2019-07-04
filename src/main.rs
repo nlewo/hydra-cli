@@ -1,14 +1,13 @@
 extern crate hydra_cli;
 
-use hydra_cli::hydra::{Build, Eval, Jobset, JobsetOverview, Reproduce, Search};
+use hydra_cli::hydra::{Eval, Jobset, JobsetOverview, Reproduce, Search};
+use hydra_cli::pretty::{build_pretty_print, evaluation_pretty_print};
 
 extern crate clap;
 extern crate reqwest;
 
 use clap::{App, Arg, SubCommand};
 use reqwest::Error;
-extern crate chrono;
-use chrono::NaiveDateTime;
 #[macro_use]
 extern crate log;
 use serde::de::DeserializeOwned;
@@ -47,36 +46,6 @@ fn test_eval() -> Result<(), std::io::Error> {
     let e: Eval = serde_json::from_str(&contents)?;
     evaluation_pretty_print(&e);
     Ok(())
-}
-
-fn build_pretty_print(b: &Build) {
-    println!("{:14} {}/{}/{}", "Job", b.project, b.jobset, b.job);
-    println!(
-        "{:14} {}",
-        "Finished at",
-        NaiveDateTime::from_timestamp(b.stoptime, 0),
-    );
-    println!("{:14} {}", "Derviation", b.drvpath);
-    println!("{:14}", "Build outputs");
-    for (k, v) in &b.buildoutputs {
-        println!("  {:12} {}", k, v.path);
-    }
-}
-
-fn evaluation_pretty_print(e: &Eval) {
-    for (k, v) in &e.jobsetevalinputs {
-        println!("  {}", k);
-        println!("    {:10} {}", "type", v.input_type);
-        if let Some(t) = &v.value {
-            println!("    {:10} {}", "value", t);
-        }
-        if let Some(t) = &v.uri {
-            println!("    {:10} {}", "uri", t);
-        }
-        if let Some(t) = &v.revision {
-            println!("    {:10} {}", "revision", t);
-        }
-    }
 }
 
 fn query<T: DeserializeOwned>(request_url: String) -> Result<T, Error> {
