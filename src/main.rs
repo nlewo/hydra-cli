@@ -1,11 +1,12 @@
+extern crate hydra_cli;
+
+use hydra_cli::hydra::{Build, Eval, Jobset, JobsetOverview, Reproduce, Search};
+
 extern crate clap;
 extern crate reqwest;
-extern crate serde_derive;
+
 use clap::{App, Arg, SubCommand};
 use reqwest::Error;
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use std::collections::HashMap;
 extern crate chrono;
 use chrono::NaiveDateTime;
 #[macro_use]
@@ -15,7 +16,7 @@ use serde::de::DeserializeOwned;
 #[macro_use]
 extern crate prettytable;
 use prettytable::format;
-use prettytable::{Cell, Row, Table};
+pub use serde_json::Value;
 
 #[cfg(test)]
 use std::fs::File;
@@ -46,65 +47,6 @@ fn test_eval() -> Result<(), std::io::Error> {
     let e: Eval = serde_json::from_str(&contents)?;
     evaluation_pretty_print(&e);
     Ok(())
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Input {
-    value: Option<String>,
-    #[serde(rename = "type")]
-    input_type: String,
-    revision: Option<String>,
-    uri: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Eval {
-    jobsetevalinputs: HashMap<String, Input>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Jobset {
-    nixexprpath: String,
-    nixexprinput: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Path {
-    path: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Build {
-    id: i64,
-    project: String,
-    drvpath: String,
-    job: String,
-    jobset: String,
-    buildoutputs: HashMap<String, Path>,
-    stoptime: i64,
-    jobsetevals: Vec<i64>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Search {
-    builds: Vec<Build>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Reproduce {
-    build: Build,
-    eval: Eval,
-    jobset: Jobset,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct JobsetOverview {
-    nrscheduled: i64,
-    nrtotal: i64,
-    nrsucceeded: i64,
-    project: String,
-    name: String,
-    nrfailed: i64,
 }
 
 fn build_pretty_print(b: &Build) {
