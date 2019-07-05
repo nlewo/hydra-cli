@@ -28,7 +28,7 @@ pub fn run(host: &str, query: &str, to_json: bool) -> Result<(), Error> {
     };
 
     if to_json {
-        println!("{}", serde_json::to_string(&reproduce).unwrap());
+        println!("{}", serde_json::to_string_pretty(&reproduce).unwrap());
     } else {
         build_pretty_print(&reproduce.build);
         let input = &reproduce.eval.jobsetevalinputs[&reproduce.jobset.nixexprinput];

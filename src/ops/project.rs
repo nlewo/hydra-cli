@@ -24,7 +24,7 @@ pub fn render_response(res: std::vec::Vec<JobsetOverview>) {
 pub fn run(host: &str, project: &str, to_json: bool) -> Result<(), Error> {
     let res = jobset_overview(host, project)?;
     if to_json {
-        println!("{}", serde_json::to_string(&res).unwrap())
+        println!("{}", serde_json::to_string_pretty(&res).unwrap())
     } else {
         render_response(res)
     };
