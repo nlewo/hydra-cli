@@ -61,7 +61,11 @@ fn main() -> Result<(), Error> {
             args.value_of("limit").unwrap().parse().unwrap(),
         ),
 
-        ("reproducible", Some(args)) => reproduce::run(host, args.value_of("QUERY").unwrap()),
+        ("reproducible", Some(args)) => reproduce::run(
+            host,
+            args.value_of("QUERY").unwrap(),
+            matches.is_present("json"),
+        ),
 
         ("project", Some(args)) => project::run(
             host,
