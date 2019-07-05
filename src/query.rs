@@ -22,7 +22,7 @@ pub fn eval(host: String, number: i64) -> Result<Eval, Error> {
     Ok(res)
 }
 
-pub fn jobsetOverview(host: String, project: String) -> Result<Vec<JobsetOverview>, Error> {
+pub fn jobsetOverview(host: &str, project: &str) -> Result<Vec<JobsetOverview>, Error> {
     let request_url = format!(
         "{host}/api/jobsets?project={project}",
         host = host,

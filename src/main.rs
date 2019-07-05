@@ -1,15 +1,7 @@
 extern crate hydra_cli;
-#[macro_use]
-extern crate log;
-#[macro_use]
-extern crate prettytable;
 
 use clap::{App, Arg, SubCommand};
-use hydra_cli::hydra::Reproduce;
 use hydra_cli::ops::{project, reproduce, search};
-use hydra_cli::pretty::{build_pretty_print, evaluation_pretty_print};
-use hydra_cli::query::{eval, jobset, jobsetOverview, search};
-use prettytable::format;
 use reqwest::Error;
 
 fn main() -> Result<(), Error> {
@@ -71,7 +63,11 @@ fn main() -> Result<(), Error> {
 
         ("reproducible", Some(args)) => reproduce::run(host, args.value_of("QUERY").unwrap()),
 
-        ("project", Some(args)) => project::run(host, args.value_of("PROJECT").unwrap()),
+        ("project", Some(args)) => project::run(
+            host,
+            args.value_of("PROJECT").unwrap(),
+            matches.is_present("json"),
+        ),
 
         _ => Ok(()),
     };
