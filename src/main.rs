@@ -52,6 +52,10 @@ fn main() -> Result<(), Error> {
                 .arg(Arg::with_name("json").short("j").help("JSON output")),
         );
 
+    let mut help_buffer = Vec::new();
+    app.write_help(&mut help_buffer).unwrap();
+    let help_string = String::from_utf8(help_buffer).unwrap();
+
     let matches = app.get_matches();
     let host = matches.value_of("host").unwrap();
     let _ = match matches.subcommand() {
@@ -73,7 +77,10 @@ fn main() -> Result<(), Error> {
             args.is_present("json"),
         ),
 
-        _ => Ok(()),
+        _ => {
+            println!("{}", help_string);
+            Ok(())
+        }
     };
 
     Ok(())
