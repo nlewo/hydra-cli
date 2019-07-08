@@ -50,6 +50,5 @@ pub fn search(host: &str, queri: &str, limit: usize) -> Result<Search, Error> {
     if search.builds.len() > limit {
         search.builds = search.builds[0..limit].to_vec();
     }
-    debug!("{:?}", search);
     Ok(search)
 }
