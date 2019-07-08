@@ -1,7 +1,7 @@
 extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
-use hydra_cli::ops::{project, reproduce, search};
+use hydra_cli::ops::{create, project, reproduce, search};
 use reqwest::Error;
 
 fn main() -> Result<(), Error> {
@@ -50,6 +50,38 @@ fn main() -> Result<(), Error> {
                         .help("A project name"),
                 )
                 .arg(Arg::with_name("json").short("j").help("JSON output")),
+        )
+        .subcommand(
+            SubCommand::with_name("create")
+                .about("Create a new project")
+                .arg(
+                    Arg::with_name("config")
+                        .takes_value(true)
+                        .long("config")
+                        .required(true)
+                        .help("Project configuration in JSON"),
+                )
+                .arg(
+                    Arg::with_name("jobset")
+                        .required(true)
+                        .help("The name of the jobset to create"),
+                )
+                .arg(
+                    Arg::with_name("user")
+                        .takes_value(true)
+                        .required(true)
+                        .long("user")
+                        .env("HYDRA_USER")
+                        .help("A user name"),
+                )
+                .arg(
+                    Arg::with_name("password")
+                        .takes_value(true)
+                        .required(true)
+                        .long("password")
+                        .env("HYDRA_PW")
+                        .help("A user password"),
+                ),
         );
 
     let mut help_buffer = Vec::new();
@@ -75,6 +107,14 @@ fn main() -> Result<(), Error> {
             host,
             args.value_of("PROJECT").unwrap(),
             args.is_present("json"),
+        ),
+
+        ("create", Some(args)) => create::run(
+            host,
+            args.value_of("config").unwrap(),
+            args.value_of("jobset").unwrap(),
+            args.value_of("user").unwrap(),
+            args.value_of("password").unwrap(),
         ),
 
         _ => {
