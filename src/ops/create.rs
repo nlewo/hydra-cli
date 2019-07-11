@@ -4,6 +4,11 @@ use reqwest::Error;
 use std::collections::HashMap;
 use std::fs::read_to_string;
 
+fn load_config(config_path: &str) -> JobsetConfig {
+    let cfg = read_to_string(config_path).expect("Failed to read config file");
+    serde_json::from_str(&cfg).expect("Failed to parse jobset configuration")
+}
+
 fn login(client: &reqwest::Client, host: &str, user: &str, password: &str) -> Result<(), Error> {
     let login_request_url = format!("{host}/login", host = host);
     let creds: HashMap<&str, &str> = [("username", user), ("password", password)]
@@ -36,13 +41,10 @@ fn create_project(client: &reqwest::Client, host: &str, project: &str) -> Result
 fn create_jobset(
     client: &reqwest::Client,
     host: &str,
-    config: &str,
+    jobset_config: &JobsetConfig,
     project: &str,
     jobset: &str,
 ) -> Result<(), Error> {
-    let config_str = read_to_string(config).unwrap();
-    let jobset_cfg: JobsetConfig = serde_json::from_str(&config_str).unwrap();
-
     let jobset_request_url = format!(
         "{host}/jobset/{project}/{jobset}",
         host = host,
@@ -52,25 +54,29 @@ fn create_jobset(
     client
         .put(&jobset_request_url)
         .header(REFERER, host)
-        .json(&jobset_cfg)
+        .json(&jobset_config)
         .send()?;
     Ok(())
 }
 
 pub fn run(
     host: &str,
-    config: &str,
-    project: &str,
-    jobset: &str,
+    config_path: &str,
+    project_name: &str,
+    jobset_name: &str,
     user: &str,
     password: &str,
 ) -> Result<(), Error> {
-    println!("Creating jobset '{}' in project '{}'", jobset, project);
+    println!(
+        "Creating jobset '{}' in project '{}'",
+        jobset_name, project_name
+    );
     let client = reqwest::Client::builder().cookie_store(true).build()?;
+    let cfg = load_config(config_path);
 
     login(&client, host, user, password)?;
-    create_project(&client, host, project)?;
-    create_jobset(&client, host, config, project, jobset)?;
+    create_project(&client, host, project_name)?;
+    create_jobset(&client, host, &cfg, project_name, jobset_name)?;
 
     Ok(())
 }

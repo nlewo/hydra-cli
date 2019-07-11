@@ -42,7 +42,7 @@ fn main() -> Result<(), Error> {
                 .arg(Arg::with_name("json").short("j").help("JSON output")),
         )
         .subcommand(
-            SubCommand::with_name("project")
+            SubCommand::with_name("show-project")
                 .about("Get information of a project")
                 .arg(
                     Arg::with_name("PROJECT")
@@ -52,7 +52,7 @@ fn main() -> Result<(), Error> {
                 .arg(Arg::with_name("json").short("j").help("JSON output")),
         )
         .subcommand(
-            SubCommand::with_name("create")
+            SubCommand::with_name("create-project")
                 .about("Create a new project")
                 .arg(
                     Arg::with_name("config")
@@ -110,13 +110,13 @@ fn main() -> Result<(), Error> {
             args.is_present("json"),
         ),
 
-        ("project", Some(args)) => project::run(
+        ("show-project", Some(args)) => project::run(
             host,
             args.value_of("PROJECT").unwrap(),
             args.is_present("json"),
         ),
 
-        ("create", Some(args)) => create::run(
+        ("create-project", Some(args)) => create::run(
             host,
             args.value_of("config").unwrap(),
             args.value_of("project").unwrap(),
