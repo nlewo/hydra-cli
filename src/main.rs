@@ -62,6 +62,13 @@ fn main() -> Result<(), Error> {
                         .help("Project configuration in JSON"),
                 )
                 .arg(
+                    Arg::with_name("project")
+                        .takes_value(true)
+                        .long("project")
+                        .required(true)
+                        .help("The name of the project in which to create the jobset"),
+                )
+                .arg(
                     Arg::with_name("jobset")
                         .required(true)
                         .help("The name of the jobset to create"),
@@ -112,6 +119,7 @@ fn main() -> Result<(), Error> {
         ("create", Some(args)) => create::run(
             host,
             args.value_of("config").unwrap(),
+            args.value_of("project").unwrap(),
             args.value_of("jobset").unwrap(),
             args.value_of("user").unwrap(),
             args.value_of("password").unwrap(),

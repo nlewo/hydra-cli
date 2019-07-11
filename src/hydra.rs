@@ -60,3 +60,22 @@ pub struct JobsetOverview {
     pub name: String,
     pub nrfailed: i64,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct JobsetConfig {
+    pub description: String,
+    pub checkinterval: i64,
+    enabled: bool,
+    visible: bool,
+    keepnr: i64,
+    nixexprinput: String,
+    nixexprpath: String,
+    inputs: HashMap<String, Input>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ProjectConfig {
+    pub displayname: String,
+    pub enabled: bool,
+    pub visible: bool,
+}
