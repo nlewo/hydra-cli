@@ -1,7 +1,7 @@
 extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
-use hydra_cli::ops::{create, project, reproduce, search};
+use hydra_cli::ops::{jobset_create, project, project_create, reproduce, search};
 use reqwest::Error;
 
 fn main() -> Result<(), Error> {
@@ -42,7 +42,7 @@ fn main() -> Result<(), Error> {
                 .arg(Arg::with_name("json").short("j").help("JSON output")),
         )
         .subcommand(
-            SubCommand::with_name("show-project")
+            SubCommand::with_name("project-show")
                 .about("Get information of a project")
                 .arg(
                     Arg::with_name("PROJECT")
@@ -52,8 +52,35 @@ fn main() -> Result<(), Error> {
                 .arg(Arg::with_name("json").short("j").help("JSON output")),
         )
         .subcommand(
-            SubCommand::with_name("create-project")
+            SubCommand::with_name("project-create")
                 .about("Create a new project")
+                .arg(
+                    Arg::with_name("project")
+                        .takes_value(true)
+                        .long("project")
+                        .required(true)
+                        .help("The name of the project in which to create the jobset"),
+                )
+                .arg(
+                    Arg::with_name("user")
+                        .takes_value(true)
+                        .required(true)
+                        .long("user")
+                        .env("HYDRA_USER")
+                        .help("A user name"),
+                )
+                .arg(
+                    Arg::with_name("password")
+                        .takes_value(true)
+                        .required(true)
+                        .long("password")
+                        .env("HYDRA_PW")
+                        .help("A user password"),
+                ),
+        )
+        .subcommand(
+            SubCommand::with_name("project-create")
+                .about("Add jobsets to a project")
                 .arg(
                     Arg::with_name("config")
                         .takes_value(true)
@@ -66,7 +93,7 @@ fn main() -> Result<(), Error> {
                         .takes_value(true)
                         .long("project")
                         .required(true)
-                        .help("The name of the project in which to create the jobset"),
+                        .help("The project to add the jobset to"),
                 )
                 .arg(
                     Arg::with_name("jobset")
@@ -110,13 +137,20 @@ fn main() -> Result<(), Error> {
             args.is_present("json"),
         ),
 
-        ("show-project", Some(args)) => project::run(
+        ("project-show", Some(args)) => project::run(
             host,
             args.value_of("PROJECT").unwrap(),
             args.is_present("json"),
         ),
 
-        ("create-project", Some(args)) => create::run(
+        ("project-create", Some(args)) => project_create::run(
+            host,
+            args.value_of("project").unwrap(),
+            args.value_of("user").unwrap(),
+            args.value_of("password").unwrap(),
+        ),
+
+        ("jobset-create", Some(args)) => jobset_create::run(
             host,
             args.value_of("config").unwrap(),
             args.value_of("project").unwrap(),

@@ -1,4 +1,4 @@
-use crate::hydra::{JobsetConfig, ProjectConfig};
+use crate::hydra::JobsetConfig;
 use reqwest::header::REFERER;
 use reqwest::Error;
 use std::collections::HashMap;
@@ -19,21 +19,6 @@ fn login(client: &reqwest::Client, host: &str, user: &str, password: &str) -> Re
         .post(&login_request_url)
         .header(REFERER, host)
         .json(&creds)
-        .send()?;
-    Ok(())
-}
-
-fn create_project(client: &reqwest::Client, host: &str, project: &str) -> Result<(), Error> {
-    let create_proj_url = format!("{host}/project/{project}", host = host, project = project);
-    let proj: ProjectConfig = ProjectConfig {
-        displayname: String::from(project),
-        enabled: true,
-        visible: true,
-    };
-    client
-        .put(&create_proj_url)
-        .header(REFERER, host)
-        .json(&proj)
         .send()?;
     Ok(())
 }
@@ -75,7 +60,6 @@ pub fn run(
     let cfg = load_config(config_path);
 
     login(&client, host, user, password)?;
-    create_project(&client, host, project_name)?;
     create_jobset(&client, host, &cfg, project_name, jobset_name)?;
 
     Ok(())
