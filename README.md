@@ -24,28 +24,34 @@
         -H <host>        Hydra host URL [env: HYDRA_HOST=]  [default: https://hydra.nixos.org]
     
     SUBCOMMANDS:
-        help         Prints this message or the help of the given subcommand(s)
-        project      Get information of a project
-        reproduce    Retrieve information to reproduce an output path
-        search       Search by output paths
+        create-project    Create a new project
+        help              Prints this message or the help of the given subcommand(s)
+        reproduce         Retrieve information to reproduce an output path
+        search            Search by output paths
+        show-project      Get information of a project
     
     A client to query Hydra through its JSON API.
 
-### Command `hydra-cli project`
+### Command `hydra-cli create-project`
 
-    hydra-cli-project 
-    Get information of a project
+    hydra-cli-create-project 
+    Create a new project
     
     USAGE:
-        hydra-cli project [FLAGS] <PROJECT>
+        hydra-cli create-project <jobset> --config <config> --password <password> --project <project> --user <user>
     
     FLAGS:
         -h, --help       Prints help information
-        -j               JSON output
         -V, --version    Prints version information
     
+    OPTIONS:
+            --config <config>        Project configuration in JSON
+            --password <password>    A user password [env: HYDRA_PW=]
+            --project <project>      The name of the project in which to create the jobset
+            --user <user>            A user name [env: HYDRA_USER=]
+    
     ARGS:
-        <PROJECT>    A project name
+        <jobset>    The name of the jobset to create
 
 ### Command `hydra-cli reproduce`
 
@@ -78,4 +84,20 @@
     ARGS:
         <QUERY>    Piece of an output path (hash, name,...)
         <limit>    How many results to return [default: 10]
+
+### Command `hydra-cli show-project`
+
+    hydra-cli-show-project 
+    Get information of a project
+    
+    USAGE:
+        hydra-cli show-project [FLAGS] <PROJECT>
+    
+    FLAGS:
+        -h, --help       Prints help information
+        -j               JSON output
+        -V, --version    Prints version information
+    
+    ARGS:
+        <PROJECT>    A project name
 
