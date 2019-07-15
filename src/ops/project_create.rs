@@ -1,5 +1,5 @@
 use crate::hydra::ProjectConfig;
-use crate::ops::{ok_msg, OpResult};
+use crate::ops::{ok_msg, OpError, OpResult};
 use reqwest::header::REFERER;
 use reqwest::Response;
 use std::collections::HashMap;
@@ -44,8 +44,12 @@ pub fn run(host: &str, project_name: &str, user: &str, password: &str) -> OpResu
     println!("Creating project '{}' on host '{}' ...", project_name, host);
 
     let client = reqwest::Client::builder().cookie_store(true).build()?;
-    login(&client, host, user, password)?;
-    create_project(&client, host, project_name)?;
+    let res = login(&client, host, user, password)?;
 
-    ok_msg("project created")
+    if res.status().is_success() {
+        create_project(&client, host, project_name)?;
+        ok_msg("project created")
+    } else {
+        Err(OpError::AuthError)
+    }
 }

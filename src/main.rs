@@ -167,12 +167,16 @@ fn main() {
 
     match cmd_res {
         Ok(_) => std::process::exit(0),
+        Err(OpError::AuthError) => {
+            eprintln!("ERROR: Failed to login. Please check your credentials");
+            std::process::exit(1)
+        }
         Err(OpError::CmdErr) => {
-            eprintln!("hydra-cli called with invalid arguments");
+            eprintln!("ERROR: hydra-cli called with invalid arguments");
             std::process::exit(1)
         }
         Err(OpError::RequestError(m)) => {
-            eprintln!("{}", m);
+            eprintln!("ERROR: {}", m);
             std::process::exit(1)
         }
     }

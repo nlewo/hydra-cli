@@ -1,5 +1,5 @@
 use crate::hydra::JobsetConfig;
-use crate::ops::{ok_msg, OpResult};
+use crate::ops::{ok_msg, OpError, OpResult};
 use reqwest::header::REFERER;
 use reqwest::Response;
 use std::collections::HashMap;
@@ -62,9 +62,12 @@ pub fn run(
     );
     let client = reqwest::Client::builder().cookie_store(true).build()?;
     let cfg = load_config(config_path);
+    let res = login(&client, host, user, password)?;
 
-    login(&client, host, user, password)?;
-    create_jobset(&client, host, &cfg, project_name, jobset_name)?;
-
-    ok_msg("jobset created")
+    if res.status().is_success() {
+        create_jobset(&client, host, &cfg, project_name, jobset_name)?;
+        ok_msg("jobset created")
+    } else {
+        Err(OpError::AuthError)
+    }
 }

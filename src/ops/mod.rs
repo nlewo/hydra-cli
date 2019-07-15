@@ -5,6 +5,7 @@ pub mod reproduce;
 pub mod search;
 
 pub enum OpError {
+    AuthError,
     CmdErr,
     RequestError(String),
 }
