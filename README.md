@@ -24,21 +24,22 @@
         -H <host>        Hydra host URL [env: HYDRA_HOST=]  [default: https://hydra.nixos.org]
     
     SUBCOMMANDS:
-        create-project    Create a new project
         help              Prints this message or the help of the given subcommand(s)
+        jobset-create     Add jobsets to a project
+        project-create    Create a new project
+        project-show      Get information of a project
         reproduce         Retrieve information to reproduce an output path
         search            Search by output paths
-        show-project      Get information of a project
     
     A client to query Hydra through its JSON API.
 
-### Command `hydra-cli create-project`
+### Command `hydra-cli jobset-create`
 
-    hydra-cli-create-project 
-    Create a new project
+    hydra-cli-jobset-create 
+    Add jobsets to a project
     
     USAGE:
-        hydra-cli create-project <jobset> --config <config> --password <password> --project <project> --user <user>
+        hydra-cli jobset-create <jobset> --config <config> --password <password> --project <project> --user <user>
     
     FLAGS:
         -h, --help       Prints help information
@@ -47,11 +48,46 @@
     OPTIONS:
             --config <config>        Project configuration in JSON
             --password <password>    A user password [env: HYDRA_PW=]
-            --project <project>      The name of the project in which to create the jobset
+            --project <project>      The project to add the jobset to
             --user <user>            A user name [env: HYDRA_USER=]
     
     ARGS:
         <jobset>    The name of the jobset to create
+
+### Command `hydra-cli project-create`
+
+    hydra-cli-project-create 
+    Create a new project
+    
+    USAGE:
+        hydra-cli project-create <project> --password <password> --user <user>
+    
+    FLAGS:
+        -h, --help       Prints help information
+        -V, --version    Prints version information
+    
+    OPTIONS:
+            --password <password>    A user password [env: HYDRA_PW=]
+            --user <user>            A user name [env: HYDRA_USER=]
+    
+    ARGS:
+        <project>    The name of the project in which to create the jobset
+
+### Command `hydra-cli project-show`
+
+    hydra-cli-project-show 
+    Get information of a project
+    
+    USAGE:
+        hydra-cli project-show [FLAGS] <project>
+    
+    FLAGS:
+        -h, --help       Prints help information
+        -j               JSON output
+        -V, --version    Prints version information
+    
+    ARGS:
+        <project>    A project name
 
 ### Command `hydra-cli reproduce`
 
@@ -59,7 +95,7 @@
     Retrieve information to reproduce an output path
     
     USAGE:
-        hydra-cli reproduce [FLAGS] <QUERY>
+        hydra-cli reproduce [FLAGS] <query>
     
     FLAGS:
         -h, --help       Prints help information
@@ -67,7 +103,7 @@
         -V, --version    Prints version information
     
     ARGS:
-        <QUERY>    Piece of an output path (hash, name,...)
+        <query>    Piece of an output path (hash, name,...)
 
 ### Command `hydra-cli search`
 
@@ -75,29 +111,13 @@
     Search by output paths
     
     USAGE:
-        hydra-cli search <QUERY> [limit]
+        hydra-cli search <query> [limit]
     
     FLAGS:
         -h, --help       Prints help information
         -V, --version    Prints version information
     
     ARGS:
-        <QUERY>    Piece of an output path (hash, name,...)
+        <query>    Piece of an output path (hash, name,...)
         <limit>    How many results to return [default: 10]
-
-### Command `hydra-cli show-project`
-
-    hydra-cli-show-project 
-    Get information of a project
-    
-    USAGE:
-        hydra-cli show-project [FLAGS] <PROJECT>
-    
-    FLAGS:
-        -h, --help       Prints help information
-        -j               JSON output
-        -V, --version    Prints version information
-    
-    ARGS:
-        <PROJECT>    A project name
 
