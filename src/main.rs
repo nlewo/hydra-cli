@@ -21,7 +21,7 @@ fn main() -> Result<(), Error> {
             SubCommand::with_name("search")
                 .about("Search by output paths")
                 .arg(
-                    Arg::with_name("QUERY")
+                    Arg::with_name("query")
                         .required(true)
                         .help("Piece of an output path (hash, name,...)"),
                 )
@@ -35,7 +35,7 @@ fn main() -> Result<(), Error> {
             SubCommand::with_name("reproduce")
                 .about("Retrieve information to reproduce an output path")
                 .arg(
-                    Arg::with_name("QUERY")
+                    Arg::with_name("query")
                         .required(true)
                         .help("Piece of an output path (hash, name,...)"),
                 )
@@ -45,7 +45,7 @@ fn main() -> Result<(), Error> {
             SubCommand::with_name("project-show")
                 .about("Get information of a project")
                 .arg(
-                    Arg::with_name("PROJECT")
+                    Arg::with_name("project")
                         .required(true)
                         .help("A project name"),
                 )
