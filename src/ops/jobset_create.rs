@@ -1,6 +1,7 @@
 use crate::hydra::JobsetConfig;
+use crate::ops::{ok_msg, OpResult};
 use reqwest::header::REFERER;
-use reqwest::Error;
+use reqwest::Response;
 use std::collections::HashMap;
 use std::fs::read_to_string;
 
@@ -9,7 +10,12 @@ fn load_config(config_path: &str) -> JobsetConfig {
     serde_json::from_str(&cfg).expect("Failed to parse jobset configuration")
 }
 
-fn login(client: &reqwest::Client, host: &str, user: &str, password: &str) -> Result<(), Error> {
+fn login(
+    client: &reqwest::Client,
+    host: &str,
+    user: &str,
+    password: &str,
+) -> reqwest::Result<Response> {
     let login_request_url = format!("{host}/login", host = host);
     let creds: HashMap<&str, &str> = [("username", user), ("password", password)]
         .iter()
@@ -19,8 +25,7 @@ fn login(client: &reqwest::Client, host: &str, user: &str, password: &str) -> Re
         .post(&login_request_url)
         .header(REFERER, host)
         .json(&creds)
-        .send()?;
-    Ok(())
+        .send()
 }
 
 fn create_jobset(
@@ -29,7 +34,7 @@ fn create_jobset(
     jobset_config: &JobsetConfig,
     project: &str,
     jobset: &str,
-) -> Result<(), Error> {
+) -> reqwest::Result<Response> {
     let jobset_request_url = format!(
         "{host}/jobset/{project}/{jobset}",
         host = host,
@@ -40,8 +45,7 @@ fn create_jobset(
         .put(&jobset_request_url)
         .header(REFERER, host)
         .json(&jobset_config)
-        .send()?;
-    Ok(())
+        .send()
 }
 
 pub fn run(
@@ -51,7 +55,7 @@ pub fn run(
     jobset_name: &str,
     user: &str,
     password: &str,
-) -> Result<(), Error> {
+) -> OpResult {
     println!(
         "Creating jobset '{}' in project '{}' on host '{}' ...",
         jobset_name, project_name, host
@@ -62,5 +66,5 @@ pub fn run(
     login(&client, host, user, password)?;
     create_jobset(&client, host, &cfg, project_name, jobset_name)?;
 
-    Ok(())
+    ok_msg("jobset created")
 }

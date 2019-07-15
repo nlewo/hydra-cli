@@ -1,10 +1,12 @@
 extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
-use hydra_cli::ops::{jobset_create, project, project_create, reproduce, search};
+use hydra_cli::ops::{
+    jobset_create, project, project_create, reproduce, search, OpError, OpResult,
+};
 use reqwest::Error;
 
-fn main() -> Result<(), Error> {
+fn main() {
     let app = App::new("hydra-cli")
         .version("0.1")
         .about("CLI Hydra client")
@@ -122,7 +124,7 @@ fn main() -> Result<(), Error> {
 
     let matches = app.get_matches();
     let host = matches.value_of("host").unwrap();
-    let _ = match matches.subcommand() {
+    let cmd_res: OpResult = match matches.subcommand() {
         ("search", Some(args)) => search::run(
             host,
             args.value_of("QUERY").unwrap(),
@@ -159,9 +161,19 @@ fn main() -> Result<(), Error> {
 
         _ => {
             println!("{}", help_string);
-            Ok(())
+            Err(OpError::CmdErr)
         }
     };
 
-    Ok(())
+    match cmd_res {
+        Ok(_) => std::process::exit(0),
+        Err(OpError::CmdErr) => {
+            eprintln!("hydra-cli called with invalid arguments");
+            std::process::exit(1)
+        }
+        Err(OpError::RequestError(m)) => {
+            eprintln!("{}", m);
+            std::process::exit(1)
+        }
+    }
 }
