@@ -33,6 +33,8 @@ fn login(client: &reqwest::Client, host: &str, user: &str, password: &str) -> Re
 }
 
 pub fn run(host: &str, project_name: &str, user: &str, password: &str) -> Result<(), Error> {
+    println!("Creating project '{}' on host '{}' ...", project_name, host);
+
     let client = reqwest::Client::builder().cookie_store(true).build()?;
     login(&client, host, user, password)?;
     create_project(&client, host, project_name)?;

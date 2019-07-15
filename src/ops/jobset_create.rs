@@ -53,8 +53,8 @@ pub fn run(
     password: &str,
 ) -> Result<(), Error> {
     println!(
-        "Creating jobset '{}' in project '{}'",
-        jobset_name, project_name
+        "Creating jobset '{}' in project '{}' on host '{}' ...",
+        jobset_name, project_name, host
     );
     let client = reqwest::Client::builder().cookie_store(true).build()?;
     let cfg = load_config(config_path);
