@@ -56,8 +56,6 @@ fn main() -> Result<(), Error> {
                 .about("Create a new project")
                 .arg(
                     Arg::with_name("project")
-                        .takes_value(true)
-                        .long("project")
                         .required(true)
                         .help("The name of the project in which to create the jobset"),
                 )
@@ -79,7 +77,7 @@ fn main() -> Result<(), Error> {
                 ),
         )
         .subcommand(
-            SubCommand::with_name("project-create")
+            SubCommand::with_name("jobset-create")
                 .about("Add jobsets to a project")
                 .arg(
                     Arg::with_name("config")
@@ -90,9 +88,9 @@ fn main() -> Result<(), Error> {
                 )
                 .arg(
                     Arg::with_name("project")
-                        .takes_value(true)
                         .long("project")
                         .required(true)
+                        .takes_value(true)
                         .help("The project to add the jobset to"),
                 )
                 .arg(
