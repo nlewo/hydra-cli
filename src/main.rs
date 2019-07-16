@@ -2,7 +2,7 @@ extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
 use hydra_cli::ops::{
-    jobset_create, project, project_create, reproduce, search, OpError, OpResult,
+    jobset_create, jobset_wait, project, project_create, reproduce, search, OpError, OpResult,
 };
 
 fn main() {
@@ -115,6 +115,20 @@ fn main() {
                         .env("HYDRA_PW")
                         .help("A user password"),
                 ),
+        )
+        .subcommand(
+            SubCommand::with_name("jobset-wait")
+                .about("Wait for jobset completion")
+                .arg(
+                    Arg::with_name("project")
+                        .required(true)
+                        .help("The project of the jobset to wait for"),
+                )
+                .arg(
+                    Arg::with_name("jobset")
+                        .required(true)
+                        .help("The name of the jobset to wait for"),
+                )
         );
 
     let mut help_buffer = Vec::new();
@@ -158,6 +172,12 @@ fn main() {
             args.value_of("password").unwrap(),
         ),
 
+        ("jobset-wait", Some(args)) => jobset_wait::run(
+            host,
+            args.value_of("project").unwrap(),
+            args.value_of("jobset").unwrap(),
+        ),
+
         _ => {
             println!("{}", help_string);
             Err(OpError::CmdErr)
@@ -175,6 +195,10 @@ fn main() {
             std::process::exit(1)
         }
         Err(OpError::RequestError(m)) => {
+            eprintln!("ERROR: {}", m);
+            std::process::exit(1)
+        }
+        Err(OpError::Error(m)) => {
             eprintln!("ERROR: {}", m);
             std::process::exit(1)
         }

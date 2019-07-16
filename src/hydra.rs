@@ -59,6 +59,9 @@ pub struct JobsetOverview {
     pub project: String,
     pub name: String,
     pub nrfailed: i64,
+    pub starttime: Option<u64>,
+    pub lastcheckedtime: u64,
+    pub errormsg: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
