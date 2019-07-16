@@ -1,7 +1,7 @@
 use crate::hydra::JobsetOverview;
+use crate::ops::{ok_msg, OpResult};
 use crate::query::jobset_overview;
 use prettytable::format;
-use reqwest::Error;
 
 pub fn render_response(res: std::vec::Vec<JobsetOverview>) {
     let mut table = table!(["Jobset", "Succeeded", "Scheduled", "Failed"]);
@@ -21,12 +21,12 @@ pub fn render_response(res: std::vec::Vec<JobsetOverview>) {
     table.printstd();
 }
 
-pub fn run(host: &str, project: &str, to_json: bool) -> Result<(), Error> {
+pub fn run(host: &str, project: &str, to_json: bool) -> OpResult {
     let res = jobset_overview(host, project)?;
     if to_json {
         println!("{}", serde_json::to_string_pretty(&res).unwrap())
     } else {
         render_response(res)
     };
-    Ok(())
+    ok_msg("overview created")
 }

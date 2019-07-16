@@ -1,14 +1,14 @@
 use crate::hydra::{Reproduce, Search};
+use crate::ops::{ok_msg, OpResult};
 use crate::pretty::{build_pretty_print, evaluation_pretty_print};
 use crate::query::{eval, jobset, search};
-use reqwest::Error;
 
-pub fn run(host: &str, query: &str, to_json: bool) -> Result<(), Error> {
+pub fn run(host: &str, query: &str, to_json: bool) -> OpResult {
     let mut res: Search = search(host, query, 1)?;
 
     if res.builds.is_empty() {
         println!("No builds found. Exiting.");
-        return Ok(());
+        return ok_msg("no builds found");
     } else if res.builds.len() > 1 {
         eprintln!(
             "Warning: the query matches {} builds, considering the first one.",
@@ -43,5 +43,5 @@ pub fn run(host: &str, query: &str, to_json: bool) -> Result<(), Error> {
         evaluation_pretty_print(&reproduce.eval);
         println!("{:14} {}/build/{}", "Hydra url", host, reproduce.build.id);
     }
-    Ok(())
+    ok_msg("reproduce info created")
 }
