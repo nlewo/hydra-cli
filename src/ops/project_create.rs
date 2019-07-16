@@ -1,8 +1,8 @@
 use crate::hydra::ProjectConfig;
 use crate::ops::{ok_msg, OpError, OpResult};
+use crate::query::login;
 use reqwest::header::REFERER;
 use reqwest::Response;
-use std::collections::HashMap;
 
 fn create_project(
     client: &reqwest::Client,
@@ -19,24 +19,6 @@ fn create_project(
         .put(&create_proj_url)
         .header(REFERER, host)
         .json(&proj)
-        .send()
-}
-
-fn login(
-    client: &reqwest::Client,
-    host: &str,
-    user: &str,
-    password: &str,
-) -> reqwest::Result<Response> {
-    let login_request_url = format!("{host}/login", host = host);
-    let creds: HashMap<&str, &str> = [("username", user), ("password", password)]
-        .iter()
-        .cloned()
-        .collect();
-    client
-        .post(&login_request_url)
-        .header(REFERER, host)
-        .json(&creds)
         .send()
 }
 

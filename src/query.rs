@@ -1,7 +1,27 @@
 use crate::hydra::{Eval, Jobset, JobsetOverview, Search};
-use reqwest::Error;
+use reqwest::header::REFERER;
+use reqwest::{Error, Response};
 use serde::de::DeserializeOwned;
 use serde_json::Value;
+use std::collections::HashMap;
+
+pub fn login(
+    client: &reqwest::Client,
+    host: &str,
+    user: &str,
+    password: &str,
+) -> reqwest::Result<Response> {
+    let login_request_url = format!("{host}/login", host = host);
+    let creds: HashMap<&str, &str> = [("username", user), ("password", password)]
+        .iter()
+        .cloned()
+        .collect();
+    client
+        .post(&login_request_url)
+        .header(REFERER, host)
+        .json(&creds)
+        .send()
+}
 
 fn query<T: DeserializeOwned>(request_url: String) -> Result<T, Error> {
     debug!("Request url: {}", request_url);

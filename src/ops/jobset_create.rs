@@ -1,31 +1,13 @@
 use crate::hydra::JobsetConfig;
 use crate::ops::{ok_msg, OpError, OpResult};
+use crate::query::login;
 use reqwest::header::REFERER;
 use reqwest::Response;
-use std::collections::HashMap;
 use std::fs::read_to_string;
 
 fn load_config(config_path: &str) -> JobsetConfig {
     let cfg = read_to_string(config_path).expect("Failed to read config file");
     serde_json::from_str(&cfg).expect("Failed to parse jobset configuration")
-}
-
-fn login(
-    client: &reqwest::Client,
-    host: &str,
-    user: &str,
-    password: &str,
-) -> reqwest::Result<Response> {
-    let login_request_url = format!("{host}/login", host = host);
-    let creds: HashMap<&str, &str> = [("username", user), ("password", password)]
-        .iter()
-        .cloned()
-        .collect();
-    client
-        .post(&login_request_url)
-        .header(REFERER, host)
-        .json(&creds)
-        .send()
 }
 
 fn create_jobset(
