@@ -4,7 +4,6 @@ use clap::{App, Arg, SubCommand};
 use hydra_cli::ops::{
     jobset_create, project, project_create, reproduce, search, OpError, OpResult,
 };
-use reqwest::Error;
 
 fn main() {
     let app = App::new("hydra-cli")
@@ -127,19 +126,19 @@ fn main() {
     let cmd_res: OpResult = match matches.subcommand() {
         ("search", Some(args)) => search::run(
             host,
-            args.value_of("QUERY").unwrap(),
+            args.value_of("query").unwrap(),
             args.value_of("limit").unwrap().parse().unwrap(),
         ),
 
         ("reproduce", Some(args)) => reproduce::run(
             host,
-            args.value_of("QUERY").unwrap(),
+            args.value_of("query").unwrap(),
             args.is_present("json"),
         ),
 
         ("project-show", Some(args)) => project::run(
             host,
-            args.value_of("PROJECT").unwrap(),
+            args.value_of("project").unwrap(),
             args.is_present("json"),
         ),
 
