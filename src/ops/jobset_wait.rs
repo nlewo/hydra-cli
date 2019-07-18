@@ -1,4 +1,4 @@
-use crate::ops::{OpResult, OpError};
+use crate::ops::{OpResult, OpError, ok};
 use crate::hydra::JobsetOverview;
 use crate::query::jobset_overview;
 use std::time::SystemTime;
@@ -16,6 +16,30 @@ fn evaluation_started_since(jobset: &JobsetOverview) -> Option<Duration> {
     }
 }
 
+fn is_evaluation_finished_after(jobset: &JobsetOverview, start: SystemTime) -> bool {
+    (UNIX_EPOCH + Duration::from_secs(jobset.lastcheckedtime)) > start
+}
+
+fn is_jobset_built(jobset: &JobsetOverview) ->  Result<bool, OpError> {
+    if jobset.errormsg != "" {
+        println!();
+        Err(OpError::Error(
+            format!("evaluation of jobset {} failed",
+                    jobset.name)))
+    } else if jobset.nrfailed != 0 {
+        println!();
+        return Err(OpError::Error(
+            format!("Jobset {} has {} failed jobs",
+                    jobset.name,
+                    jobset.nrfailed.to_string())))
+    } else if jobset.nrsucceeded == jobset.nrtotal {
+        println!("\nall jobs of jobset {} have been built", jobset.name.to_string());
+        Ok(true)
+    } else {
+        Ok(false)
+    }
+}
+
 fn jobset_find(host: &str, project_name: &str, jobset_name: &str) -> Result<JobsetOverview, OpError> {
     let jobsets = jobset_overview(host, project_name)?;
     jobsets
@@ -28,12 +52,12 @@ fn jobset_find(host: &str, project_name: &str, jobset_name: &str) -> Result<Jobs
 }
 
 // To know if a jobset has been successfully built, four steps are required:
-// 1. ensure a evaluation is not running
-// 2. wait for a new evaluation to start
-// 3. wait for this evaluation to be terminated
-// 4. wait for all scheduled builds to terminate
+// 1. ensure a evaluation is not running         : WaitingForPreviousEval
+// 2. wait for a new evaluation to start         : WaitingForNewEval 
+// 3. wait for this evaluation to be terminated  : Evaluation
+// 4. wait for all scheduled builds to terminate : Building
 //
-// If a build or the evaluation fail, it immediately returns an error.
+// If a build or the evaluation fails, it immediately returns an error.
 //
 // There are several improvements, such as
 // - use the checkinterval to know when the next evaluation will start
@@ -53,19 +77,20 @@ pub fn run(host: &str, project_name: &str, jobset_name: &str) -> OpResult {
     println!("waiting for a potential evaluation to terminate");
     loop {
         let jobset = jobset_find(host, project_name, jobset_name)?;
+
         match state {
             State::WaitingForPreviousEval => {
                 match evaluation_started_since(&jobset) {
                     Some(_) => {}
                     None => {
                         println!("\nwaiting for an new evaluation");
-                        state = State::WaitingForNewEval;
                         start = SystemTime::now();
+                        state = State::WaitingForNewEval;
                     }
                 }
             },
             State::WaitingForNewEval => {
-                if (UNIX_EPOCH + Duration::from_secs(jobset.lastcheckedtime)) > start {
+                if is_evaluation_finished_after(&jobset, start) {
                     println!("\njobset has been evaluated");
                     // we skip the evaluation step since the evaluation is already finished
                     state = State::Building;
@@ -75,35 +100,23 @@ pub fn run(host: &str, project_name: &str, jobset_name: &str) -> OpResult {
                 }
             },
             State::Evaluating =>
-                if (UNIX_EPOCH + Duration::from_secs(jobset.lastcheckedtime)) > start {
+                if is_evaluation_finished_after(&jobset, start) {
                     println!("\njobset has been evaluated");
                     state = State::Building;
                 },
             State::Building => {
-                if jobset.errormsg != "" {
-                    println!();
-                    return Err(OpError::Error(
-                        format!("evaluation of jobset {} failed",
-                                jobset_name)));
-                }
-                if jobset.nrfailed != 0 {
-                    println!();
-                    return Err(OpError::Error(
-                        format!("Jobset {} has {} failed jobs",
-                                jobset_name,
-                                jobset.nrfailed.to_string())));
-                }
-                if jobset.nrsucceeded == jobset.nrtotal {
-                    println!("\nall jobs of jobset {} have been built", jobset_name.to_string());
-                    return Ok(None)
+                if is_jobset_built(&jobset)? {
+                    break
                 } else if nrscheduled != jobset.nrscheduled {
                     nrscheduled = jobset.nrscheduled;
-                    println!("\njobset {} has still {} jobs scheduled", jobset_name.to_string(), jobset.nrscheduled.to_string());
-                }
+                    println!("\njobset {} has still {} jobs scheduled",
+                             jobset_name.to_string(), jobset.nrscheduled.to_string());
+                }    
             }
         }
         print!(".");
         io::stdout().flush().unwrap();
         thread::sleep(Duration::from_secs(sleep));        
-    } 
+    }
+    ok()
 }
