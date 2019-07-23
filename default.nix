@@ -29,6 +29,17 @@ rec {
       echo >> $out
     done
   '';
+
+  tests.readme = pkgs.runCommand "test-readme" { } ''
+    if diff -q ${readme} ${./README.md};
+    then
+      echo ok > $out
+    else
+      echo "error: you need to generate the README by running the following command:"
+      echo 'hint : cp $(nix-build -A readme --no-out-link) README.md'
+    fi
+  '';
+
   tests.rustfmt = pkgs.runCommand "test-rustfmt" { buildInputs = [ pkgs.rustfmt ]; }
   ''
     set +e
