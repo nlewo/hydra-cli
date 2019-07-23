@@ -4,7 +4,8 @@ with pkgs;
 rec {
   hydra-cli = ((pkgs.callPackage ./Cargo.nix {
     cratesIO = pkgs.callPackage ./crates-io.nix {};
-  }).hydra_cli {});
+  }).hydra_cli {}).overrideDerivation(_: {
+    src = nix-gitignore.gitignoreSource [ "default.nix" "README*" "ci" ] ./.;});
 
   readme = pkgs.runCommand "generate-readme" { buildInputs = [ hydra-cli ]; }
   ''
