@@ -128,7 +128,7 @@ fn main() {
                     Arg::with_name("jobset")
                         .required(true)
                         .help("The name of the jobset to wait for"),
-                )
+                ),
         );
 
     let mut help_buffer = Vec::new();
