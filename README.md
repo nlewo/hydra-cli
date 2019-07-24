@@ -26,6 +26,7 @@
     SUBCOMMANDS:
         help              Prints this message or the help of the given subcommand(s)
         jobset-create     Add jobsets to a project
+        jobset-wait       Wait for jobset completion
         project-create    Create a new project
         project-show      Get information of a project
         reproduce         Retrieve information to reproduce an output path
@@ -53,6 +54,22 @@
     
     ARGS:
         <jobset>    The name of the jobset to create
+
+### Command `hydra-cli jobset-wait`
+
+    hydra-cli-jobset-wait 
+    Wait for jobset completion
+    
+    USAGE:
+        hydra-cli jobset-wait <project> <jobset>
+    
+    FLAGS:
+        -h, --help       Prints help information
+        -V, --version    Prints version information
+    
+    ARGS:
+        <project>    The project of the jobset to wait for
+        <jobset>     The name of the jobset to wait for
 
 ### Command `hydra-cli project-create`
 

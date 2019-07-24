@@ -1,4 +1,5 @@
 pub mod jobset_create;
+pub mod jobset_wait;
 pub mod project;
 pub mod project_create;
 pub mod reproduce;
@@ -7,6 +8,7 @@ pub mod search;
 pub enum OpError {
     AuthError,
     CmdErr,
+    Error(String),
     RequestError(String),
 }
 

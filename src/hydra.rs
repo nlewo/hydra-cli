@@ -51,6 +51,8 @@ pub struct Reproduce {
     pub jobset: Jobset,
 }
 
+pub type PosixTimestamp = u64;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JobsetOverview {
     pub nrscheduled: i64,
@@ -59,6 +61,9 @@ pub struct JobsetOverview {
     pub project: String,
     pub name: String,
     pub nrfailed: i64,
+    pub starttime: Option<PosixTimestamp>,
+    pub lastcheckedtime: PosixTimestamp,
+    pub errormsg: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
