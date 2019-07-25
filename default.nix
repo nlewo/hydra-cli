@@ -3,7 +3,7 @@
 with pkgs;
 
 let
-  sources = nix-gitignore.gitignoreSource [ "default.nix" "README*" "ci" ] ./.;
+  sources = nix-gitignore.gitignoreSource [ "default.nix" "README*" "ci" "tests" ] ./.;
 in
 rec {
   hydra-cli = ((pkgs.callPackage ./Cargo.nix {
