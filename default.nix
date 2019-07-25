@@ -30,32 +30,33 @@ rec {
     done
   '';
 
-  tests.readme = pkgs.runCommand "test-readme" { } ''
-    if diff -q ${readme} ${./README.md};
-    then
-      echo ok > $out
-    else
-      echo "error: you need to generate the README by running the following command:"
-      echo 'hint : cp $(nix-build -A readme --no-out-link) README.md'
-    fi
-  '';
+  tests = {
+    readme = pkgs.runCommand "test-readme" { } ''
+      if diff -q ${readme} ${./README.md};
+      then
+        echo ok > $out
+      else
+        echo "error: you need to generate the README by running the following command:"
+        echo 'hint : cp $(nix-build -A readme --no-out-link) README.md'
+      fi
+    ''  ;
 
-  tests.rustfmt = pkgs.runCommand "test-rustfmt" { buildInputs = [ pkgs.rustfmt ]; }
-  ''
-    set +e
-    find ${sources} -name "*.rs" | xargs rustfmt --check
-    RETCODE=$?
-    set -e
-    if [ $RETCODE == 0 ]
-    then
-      echo ok > $out
-    else
-      echo
-      echo "error: rustfmt failed"
-      echo 'hint : run "cargo fmt"'
-      echo
-    fi
-  '';
-
-  tests.vm = pkgs.callPackage ./tests/vm.nix { inherit hydra-cli; };
+    rustfmt = pkgs.runCommand "test-rustfmt" { buildInputs = [ pkgs.rustfmt ]; }
+    ''
+      set +e
+      find ${sources} -name "*.rs" | xargs rustfmt --check
+      RETCODE=$?
+      set -e
+      if [ $RETCODE == 0 ]
+      then
+        echo ok > $out
+      else
+        echo
+        echo "error: rustfmt failed"
+        echo 'hint : run "cargo fmt"'
+        echo
+      fi
+    ''  ;
+    vm = pkgs.callPackage ./tests/vm.nix { inherit hydra-cli; };
+  };
 }
