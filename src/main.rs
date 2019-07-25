@@ -2,7 +2,8 @@ extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
 use hydra_cli::ops::{
-    jobset_create, jobset_wait, project, project_create, reproduce, search, OpError, OpResult,
+    jobset_create, jobset_wait, project, project_create, project_list, reproduce, search, OpError,
+    OpResult,
 };
 
 fn main() {
@@ -40,6 +41,11 @@ fn main() {
                         .required(true)
                         .help("Piece of an output path (hash, name,...)"),
                 )
+                .arg(Arg::with_name("json").short("j").help("JSON output")),
+        )
+        .subcommand(
+            SubCommand::with_name("project-list")
+                .about("List projects")
                 .arg(Arg::with_name("json").short("j").help("JSON output")),
         )
         .subcommand(
@@ -149,6 +155,8 @@ fn main() {
             args.value_of("query").unwrap(),
             args.is_present("json"),
         ),
+
+        ("project-list", Some(args)) => project_list::run(host, args.is_present("json")),
 
         ("project-show", Some(args)) => project::run(
             host,

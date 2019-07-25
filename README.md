@@ -28,6 +28,7 @@
         jobset-create     Add jobsets to a project
         jobset-wait       Wait for jobset completion
         project-create    Create a new project
+        project-list      List projects
         project-show      Get information of a project
         reproduce         Retrieve information to reproduce an output path
         search            Search by output paths
@@ -89,6 +90,19 @@
     
     ARGS:
         <project>    The name of the project in which to create the jobset
+
+### Command `hydra-cli project-list`
+
+    hydra-cli-project-list 
+    List projects
+    
+    USAGE:
+        hydra-cli project-list [FLAGS]
+    
+    FLAGS:
+        -h, --help       Prints help information
+        -j               JSON output
+        -V, --version    Prints version information
 
 ### Command `hydra-cli project-show`
 

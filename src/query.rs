@@ -23,7 +23,7 @@ pub fn login(
         .send()
 }
 
-fn query<T: DeserializeOwned>(request_url: String) -> Result<T, Error> {
+pub fn query<T: DeserializeOwned>(request_url: String) -> Result<T, Error> {
     debug!("Request url: {}", request_url);
     let client = reqwest::Client::new();
     let mut res = client
