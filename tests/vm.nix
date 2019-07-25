@@ -43,6 +43,7 @@ makeTest {
     # create a project with a trivial job
     $machine->waitForOpenPort(3000);
 
-    $machine->succeed("hydra-cli -h http://localhost:3000 project-create test --password admin --user admin");
+    $machine->succeed("hydra-cli -H http://localhost:3000 project-create test --password admin --user admin");
+    $machine->succeed("hydra-cli -H http://localhost:3000 project-list | grep -q test");
   '';
 }
