@@ -57,4 +57,5 @@ rec {
     fi
   '';
 
+  tests.vm = pkgs.callPackage ./tests/vm.nix { inherit hydra-cli; };
 }
