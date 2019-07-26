@@ -1,4 +1,5 @@
-use serde::{Deserialize, Serialize};
+use serde::de::{self, Deserialize, Deserializer, Unexpected};
+use serde::Serialize;
 pub use serde_json::Value;
 use std::collections::HashMap;
 
@@ -14,6 +15,33 @@ pub struct Input {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Eval {
     pub jobsetevalinputs: HashMap<String, Input>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Project {
+    #[serde(deserialize_with = "bool_from_int")]
+    pub enabled: bool,
+    pub name: String,
+    pub description: Option<String>,
+    #[serde(deserialize_with = "bool_from_int")]
+    pub hidden: bool,
+    pub owner: String,
+    pub displayname: String,
+    pub jobsets: Vec<String>,
+}
+
+fn bool_from_int<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    match u8::deserialize(deserializer)? {
+        0 => Ok(false),
+        1 => Ok(true),
+        other => Err(de::Error::invalid_value(
+            Unexpected::Unsigned(u64::from(other)),
+            &"zero or one",
+        )),
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
