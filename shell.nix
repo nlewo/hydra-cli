@@ -18,6 +18,7 @@ in
       pkgs.pkg-config
       pkgs.openssl
       pkgs.carnix
+      pkgs.mdsh
       updateCrateDeps
     ] ++ (if devBuild then devRust else prodRust);
 
