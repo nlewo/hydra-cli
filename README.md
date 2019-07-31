@@ -36,7 +36,7 @@ projects and jobsets:
 - [reproduce](#reproduce) Retrieves information for reproducing an output path.
 - [search](#search) Searches for an output path.
 
-**Note**: By default `hydra-cli` talks to https://hydra.nixos.org. The default can be
+By default `hydra-cli` talks to https://hydra.nixos.org. The default can be
 overwritten by setting the `HYDRA_HOST` environment variable or by passing `-H <host>` on the
 command line.
 
@@ -217,3 +217,19 @@ FLAGS:
 ARGS:
     <query>    Piece of an output path (hash, name,...)
 ```
+
+
+### Contributing
+
+Contributions to the project are welcome in the form of GitHub PRs. Please consider
+the following guidelines before creating PRs:
+
+- Please make sure to format your code using `rustfmt`
+- If you are planning to make any considerable changes, you should first present your plans in a GitHub issue so it can be discussed.
+- If you are adding features please consider the possibility of adding a test in [tests/vm.nix](./tests/vm.nix)
+
+
+### License
+
+- Licensed under [MIT](./LICENSE). 
+- The hydra-cli logo has been created using [https://game-icons.net](https://game-icons.net/1x1/lorc/hydra.html).
