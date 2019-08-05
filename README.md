@@ -42,7 +42,7 @@ command line.
 
 ### Commands
 
-`$ cargo run -- --help`
+`$ hydra-cli --help`
 ```
 hydra-cli 0.1
 lewo
@@ -75,7 +75,7 @@ A client to query Hydra through its JSON API.
 The `project-create` command creates a new project under the name specified. The created project
 will be _enabled_ and _visible_. _Note_: this command requires user authentication.
 
-`$ cargo run -- project-create --help`
+`$ hydra-cli project-create --help`
 ```
 hydra-cli-project-create 
 Create a new project
@@ -98,7 +98,7 @@ ARGS:
 
 The `project-list` command retrieves a list of all configured projects.
 
-`$ cargo run -- project-list --help`
+`$ hydra-cli project-list --help`
 ```
 hydra-cli-project-list 
 List projects
@@ -115,7 +115,7 @@ FLAGS:
 
 The `project-show` command displays information on a given project.
 
-`$ cargo run -- project-show --help`
+`$ hydra-cli project-show --help`
 ```
 hydra-cli-project-show 
 Get information of a project
@@ -135,7 +135,7 @@ ARGS:
 
 The `jobset-create` command creates a new jobset and adds it to the project specified.
 
-`$ cargo run -- jobset-create --help`
+`$ hydra-cli jobset-create --help`
 ```
 hydra-cli-jobset-create 
 Add jobsets to a project
@@ -160,7 +160,7 @@ ARGS:
 
 The `jobset-create` command waits until the specified jobset has been evaluated.
 
-`$ cargo run -- jobset-wait --help`
+`$ hydra-cli jobset-wait --help`
 ```
 hydra-cli-jobset-wait 
 Wait for jobset completion
@@ -181,7 +181,7 @@ ARGS:
 The `reproduce` command retrieves information on how to reproduce a given output-path.
 reproduce it.
 
-`$ cargo run -- reproduce --help`
+`$ hydra-cli reproduce --help`
 ```
 hydra-cli-reproduce 
 Retrieve information to reproduce an output path
@@ -201,7 +201,7 @@ ARGS:
 
 The `search` command searches for a jobset based on the output-path specified.
 
-`$ cargo run -- reproduce --help`
+`$ hydra-cli reproduce --help`
 ```
 hydra-cli-reproduce 
 Retrieve information to reproduce an output path
@@ -217,8 +217,6 @@ FLAGS:
 ARGS:
     <query>    Piece of an output path (hash, name,...)
 ```
-
-
 ### Contributing
 
 Contributions to the project are welcome in the form of GitHub PRs. Please consider
