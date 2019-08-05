@@ -3,32 +3,27 @@
 with pkgs;
 
 let
-  sources = nix-gitignore.gitignoreSource [ "default.nix" "README*" "ci" "tests" ] ./.;
+  sources = nix-gitignore.gitignoreSource [ "default.nix" "ci" "tests" "target" ] ./.;
+  buildReadme = "${mdsh}/bin/mdsh --input ${sources}/README.md --output $out";
+  verifyReadme = "${buildReadme} --frozen && echo 'OK' > $out";
 in
 rec {
+
   hydra-cli = ((pkgs.callPackage ./Cargo.nix {
     cratesIO = pkgs.callPackage ./crates-io.nix {};
   }).hydra_cli {}).overrideDerivation(_: {
     src = sources;
+    doCheck = true;
+    checkPhase = ''
+      echo "Checking formatting with 'rustfmt'"
+      find . -name "*.rs" | xargs ${rustfmt}/bin/rustfmt --check
+    '';
   });
 
+  readme = pkgs.runCommand "build-readme" { buildInputs = [ hydra-cli ]; } "${buildReadme}";
+
   tests = {
-    rustfmt = pkgs.runCommand "test-rustfmt" { buildInputs = [ pkgs.rustfmt ]; }
-    ''
-      set +e
-      find ${sources} -name "*.rs" | xargs rustfmt --check
-      RETCODE=$?
-      set -e
-      if [ $RETCODE == 0 ]
-      then
-        echo ok > $out
-      else
-        echo
-        echo "error: rustfmt failed"
-        echo 'hint : run "cargo fmt"'
-        echo
-      fi
-    ''  ;
+    readme = pkgs.runCommand "test-readme" { buildInputs = [ hydra-cli ]; } "${verifyReadme}";
     vm = pkgs.callPackage ./tests/vm.nix { inherit hydra-cli; };
   };
 }
