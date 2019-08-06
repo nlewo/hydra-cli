@@ -9,16 +9,18 @@ let
 in
 rec {
 
-  hydra-cli = ((pkgs.callPackage ./Cargo.nix {
-    cratesIO = pkgs.callPackage ./crates-io.nix {};
-  }).hydra_cli {}).overrideDerivation(_: {
-    src = sources;
-    doCheck = true;
-    checkPhase = ''
-      echo "Checking formatting with 'rustfmt'"
-      find . -name "*.rs" | xargs ${rustfmt}/bin/rustfmt --check
-    '';
-  });
+  # XXX: we use buildPackageSingleStep instead of buildPackage, because the
+  # cargo version is too old to benefit from incremental builds.
+  hydra-cli = pkgs.naersk.buildPackageSingleStep (pkgs.lib.cleanSource ./.)
+    { doDoc = false;
+      doCheck = true;
+      cargoTest =
+        ''
+        cargo test --$CARGO_BUILD_PROFILE
+        cargo fmt --all -- --check
+        '';
+      buildInputs = [ pkgs.rustfmt pkgs.openssl pkgs.pkgconfig ];
+    };
 
   readme = pkgs.runCommand "build-readme" { buildInputs = [ hydra-cli ]; } "${buildReadme}";
 
