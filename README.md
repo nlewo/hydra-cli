@@ -1,6 +1,6 @@
 # hydra-cli
 
-`hydra-cli` lets you talk to the JSON API of [hydra](nixos.org/hydra) on the command line. It
+`hydra-cli` lets you talk to the JSON API of [hydra](https://nixos.org/hydra) on the command line. It
 includes commands for querying and creating projects and jobsets.
 
 <p align="center">
