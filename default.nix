@@ -11,7 +11,7 @@ rec {
 
   # XXX: we use buildPackageSingleStep instead of buildPackage, because the
   # cargo version is too old to benefit from incremental builds.
-  hydra-cli = pkgs.naersk.buildPackageSingleStep (pkgs.lib.cleanSource ./.)
+  hydra-cli = pkgs.naersk.buildPackageSingleStep (sources)
     { doDoc = false;
       doCheck = true;
       cargoTest =
