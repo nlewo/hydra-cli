@@ -10,6 +10,7 @@ extern crate log;
 #[macro_use]
 extern crate prettytable;
 
+pub mod client;
 pub mod hydra;
 pub mod ops;
 pub mod pretty;
