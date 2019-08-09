@@ -159,7 +159,7 @@ fn main() {
         ),
 
         ("reproduce", Some(args)) => reproduce::run(
-            host,
+            &client,
             args.value_of("query").unwrap(),
             args.is_present("json"),
         ),

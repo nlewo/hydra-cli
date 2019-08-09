@@ -1,4 +1,5 @@
 use crate::hydra::{Eval, Jobset, JobsetOverview, Search};
+use crate::ops::OpError;
 use reqwest::header::REFERER;
 use reqwest::Client as ReqwestClient;
 use serde::de::DeserializeOwned;
@@ -13,6 +14,13 @@ pub struct Creds {
 pub enum ClientError {
     Error(String),
     InvalidResponse,
+}
+
+// TODO: implement this properly
+impl From<ClientError> for OpError {
+    fn from(e: ClientError) -> Self {
+        OpError::RequestError(String::from("hydra client error"))
+    }
 }
 
 impl From<reqwest::Error> for ClientError {
@@ -40,6 +48,7 @@ pub trait HydraClient {
     fn eval(&self, number: i64) -> Result<Eval, ClientError>;
     fn jobset(&self, project: &str, jobset: &str) -> Result<Jobset, ClientError>;
     fn jobset_overview(&self, project: &str) -> Result<Vec<JobsetOverview>, ClientError>;
+    fn host(&self) -> String;
 }
 
 fn get_json<T: DeserializeOwned>(client: &ReqwestClient, url: &str) -> Result<T, ClientError> {
@@ -60,6 +69,10 @@ fn get_json<T: DeserializeOwned>(client: &ReqwestClient, url: &str) -> Result<T,
 }
 
 impl HydraClient for HydraRestClient<ReqwestClient> {
+    fn host(&self) -> String {
+        self.host.clone()
+    }
+
     fn search(&self, query: &str) -> Result<Search, ClientError> {
         let request_url = format!("{}/search?query={}", &self.host, query);
         get_json(&self.client, &request_url)
