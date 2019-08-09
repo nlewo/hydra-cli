@@ -1,6 +1,6 @@
+use crate::client::HydraClient;
 use crate::hydra::JobsetOverview;
 use crate::ops::{ok_msg, OpResult};
-use crate::query::jobset_overview;
 use prettytable::format;
 
 pub fn render_response(res: std::vec::Vec<JobsetOverview>) {
@@ -21,8 +21,8 @@ pub fn render_response(res: std::vec::Vec<JobsetOverview>) {
     table.printstd();
 }
 
-pub fn run(host: &str, project: &str, to_json: bool) -> OpResult {
-    let res = jobset_overview(host, project)?;
+pub fn run(client: &HydraClient, project: &str, to_json: bool) -> OpResult {
+    let res = client.jobset_overview(project)?;
     if to_json {
         println!("{}", serde_json::to_string_pretty(&res).unwrap())
     } else {

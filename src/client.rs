@@ -13,13 +13,16 @@ pub struct Creds {
 
 pub enum ClientError {
     Error(String),
-    InvalidResponse,
+    InvalidResponse(String),
 }
 
 // TODO: implement this properly
 impl From<ClientError> for OpError {
     fn from(e: ClientError) -> Self {
-        OpError::RequestError(String::from("hydra client error"))
+        match e {
+            ClientError::Error(s) => OpError::RequestError(s),
+            ClientError::InvalidResponse(s) => OpError::RequestError(s),
+        }
     }
 }
 
@@ -62,7 +65,7 @@ fn get_json<T: DeserializeOwned>(client: &ReqwestClient, url: &str) -> Result<T,
         let v: Value = res.json()?;
         match serde_json::from_value(v) {
             Ok(x) => Ok(x),
-            Err(_) => Err(ClientError::InvalidResponse),
+            Err(x) => Err(ClientError::InvalidResponse(format!("{}", x))),
         }
     } else {
         Err(ClientError::Error(format!("{}", res.status())))

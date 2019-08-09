@@ -167,7 +167,7 @@ fn main() {
         ("project-list", Some(args)) => project_list::run(&client, args.is_present("json")),
 
         ("project-show", Some(args)) => project::run(
-            host,
+            &client,
             args.value_of("project").unwrap(),
             args.is_present("json"),
         ),
