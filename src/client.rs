@@ -1,4 +1,4 @@
-use crate::hydra::{Eval, Jobset, JobsetOverview, Search};
+use crate::hydra::{Eval, Jobset, JobsetOverview, Project, Search};
 use crate::ops::OpError;
 use reqwest::header::REFERER;
 use reqwest::Client as ReqwestClient;
@@ -48,6 +48,7 @@ pub trait HydraClient {
     fn eval(&self, number: i64) -> Result<Eval, ClientError>;
     fn jobset(&self, project: &str, jobset: &str) -> Result<Jobset, ClientError>;
     fn jobset_overview(&self, project: &str) -> Result<Vec<JobsetOverview>, ClientError>;
+    fn projects(&self) -> Result<Vec<Project>, ClientError>;
     fn host(&self) -> String;
 }
 
@@ -71,6 +72,10 @@ fn get_json<T: DeserializeOwned>(client: &ReqwestClient, url: &str) -> Result<T,
 impl HydraClient for HydraRestClient<ReqwestClient> {
     fn host(&self) -> String {
         self.host.clone()
+    }
+
+    fn projects(&self) -> Result<Vec<Project>, ClientError> {
+        get_json(&self.client, &self.host)
     }
 
     fn search(&self, query: &str) -> Result<Search, ClientError> {
