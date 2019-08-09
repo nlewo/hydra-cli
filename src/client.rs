@@ -1,4 +1,4 @@
-use crate::hydra::{Eval, Jobset, JobsetOverview, Project, Search};
+use crate::hydra::{Eval, Jobset, JobsetOverview, Project, ProjectConfig, Search};
 use crate::ops::OpError;
 use reqwest::header::REFERER;
 use reqwest::Client as ReqwestClient;
@@ -52,6 +52,7 @@ pub trait HydraClient {
     fn jobset(&self, project: &str, jobset: &str) -> Result<Jobset, ClientError>;
     fn jobset_overview(&self, project: &str) -> Result<Vec<JobsetOverview>, ClientError>;
     fn projects(&self) -> Result<Vec<Project>, ClientError>;
+    fn project_create(&self, name: &str) -> Result<(), ClientError>;
     fn host(&self) -> String;
 }
 
@@ -75,6 +76,27 @@ fn get_json<T: DeserializeOwned>(client: &ReqwestClient, url: &str) -> Result<T,
 impl HydraClient for HydraRestClient<ReqwestClient> {
     fn host(&self) -> String {
         self.host.clone()
+    }
+
+    fn project_create(&self, name: &str) -> Result<(), ClientError> {
+        let create_proj_url = format!("{}/project/{}", &self.host, name);
+        let proj: ProjectConfig = ProjectConfig {
+            displayname: String::from(name),
+            enabled: true,
+            visible: true,
+        };
+        let res = self
+            .client
+            .put(&create_proj_url)
+            .header(REFERER, self.host.clone())
+            .json(&proj)
+            .send()?;
+
+        if res.status().is_success() {
+            Ok(())
+        } else {
+            Err(ClientError::Error(format!("{}", res.status())))
+        }
     }
 
     fn projects(&self) -> Result<Vec<Project>, ClientError> {

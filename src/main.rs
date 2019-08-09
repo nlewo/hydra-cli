@@ -173,7 +173,7 @@ fn main() {
         ),
 
         ("project-create", Some(args)) => project_create::run(
-            host,
+            &client,
             args.value_of("project").unwrap(),
             args.value_of("user").unwrap(),
             args.value_of("password").unwrap(),
