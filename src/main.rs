@@ -189,7 +189,7 @@ fn main() {
         ),
 
         ("jobset-wait", Some(args)) => jobset_wait::run(
-            host,
+            &client,
             args.value_of("project").unwrap(),
             args.value_of("jobset").unwrap(),
         ),
