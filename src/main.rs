@@ -180,7 +180,7 @@ fn main() {
         ),
 
         ("jobset-create", Some(args)) => jobset_create::run(
-            host,
+            &client,
             args.value_of("config").unwrap(),
             args.value_of("project").unwrap(),
             args.value_of("jobset").unwrap(),
