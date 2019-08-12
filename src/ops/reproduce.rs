@@ -2,7 +2,6 @@ use crate::client::HydraClient;
 use crate::hydra::{Reproduce, Search};
 use crate::ops::{ok_msg, OpResult};
 use crate::pretty::{build_pretty_print, evaluation_pretty_print};
-use crate::query::{eval, jobset, search};
 
 pub fn run(client: &HydraClient, query: &str, to_json: bool) -> OpResult {
     let mut res: Search = client.search(query)?;

@@ -14,4 +14,3 @@ pub mod client;
 pub mod hydra;
 pub mod ops;
 pub mod pretty;
-pub mod query;
