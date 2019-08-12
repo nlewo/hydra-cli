@@ -1,5 +1,5 @@
-use crate::client::{Creds, HydraClient};
-use crate::ops::{ok_msg, OpError, OpResult};
+use crate::hydra::client::{Creds, HydraClient};
+use crate::ops::{ok_msg, OpResult};
 
 pub fn run(client: &HydraClient, project_name: &str, user: &str, password: &str) -> OpResult {
     let creds = Creds {

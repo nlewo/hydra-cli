@@ -3,7 +3,9 @@
 //! The HydraClient trait includes operations for querying and creating resources on
 //! a Hydra endpoint.
 
-use crate::hydra::{Eval, Jobset, JobsetConfig, JobsetOverview, Project, ProjectConfig, Search};
+pub use crate::hydra::types::{
+    Build, Eval, Jobset, JobsetConfig, JobsetOverview, Project, ProjectConfig, Reproduce, Search,
+};
 use crate::ops::OpError;
 use reqwest::header::REFERER;
 use reqwest::Client as ReqwestClient;

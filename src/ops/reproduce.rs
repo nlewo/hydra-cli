@@ -1,5 +1,4 @@
-use crate::client::HydraClient;
-use crate::hydra::{Reproduce, Search};
+use crate::hydra::client::{HydraClient, Reproduce, Search};
 use crate::ops::{ok_msg, OpResult};
 use crate::pretty::{build_pretty_print, evaluation_pretty_print};
 

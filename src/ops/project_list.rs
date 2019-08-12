@@ -1,5 +1,4 @@
-use crate::client::HydraClient;
-use crate::hydra::Project;
+use crate::hydra::client::{HydraClient, Project};
 use crate::ops::{ok_msg, OpResult};
 use prettytable::format;
 

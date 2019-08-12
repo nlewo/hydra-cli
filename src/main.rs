@@ -1,7 +1,7 @@
 extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
-use hydra_cli::client::HydraRestClient;
+use hydra_cli::hydra::client::HydraRestClient;
 use hydra_cli::ops::{
     jobset_create, jobset_wait, project, project_create, project_list, reproduce, search, OpError,
     OpResult,

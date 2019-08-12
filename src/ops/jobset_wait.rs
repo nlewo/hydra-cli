@@ -1,5 +1,5 @@
-use crate::client::HydraClient;
-use crate::hydra::JobsetOverview;
+use crate::hydra::client::HydraClient;
+use crate::hydra::client::JobsetOverview;
 use crate::ops::{ok, OpError, OpResult};
 use std::io;
 use std::io::Write;

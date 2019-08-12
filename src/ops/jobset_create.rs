@@ -1,5 +1,4 @@
-use crate::client::{Creds, HydraClient};
-use crate::hydra::JobsetConfig;
+use crate::hydra::client::{Creds, HydraClient, JobsetConfig};
 use crate::ops::{ok_msg, OpResult};
 use std::fs::read_to_string;
 
