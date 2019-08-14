@@ -15,6 +15,7 @@ pub struct Creds {
 }
 
 /// Errors occuring while talking to the hydra endpoint
+#[derive(PartialEq, Debug)]
 pub enum ClientError {
     /// Generic error
     Error(String),
