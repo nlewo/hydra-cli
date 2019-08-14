@@ -31,13 +31,6 @@ impl From<ClientError> for OpError {
     }
 }
 
-/// HydraRestClient wraps a client with a specific host
-#[derive(Clone)]
-pub struct HydraRestClient<T> {
-    pub host: String,
-    pub client: T,
-}
-
 pub trait HydraClient {
     /// Authenticates with the server using username and password provided by `Creds`
     fn login(&self, creds: Creds) -> Result<(), ClientError>;
@@ -68,7 +61,4 @@ pub trait HydraClient {
 
     /// Retrieves a project given by `name`
     fn project_create(&self, name: &str) -> Result<(), ClientError>;
-
-    /// Returns the host used
-    fn host(&self) -> String;
 }

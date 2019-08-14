@@ -2,7 +2,7 @@ use crate::hydra::client::{HydraClient, Reproduce, Search};
 use crate::ops::{ok_msg, OpResult};
 use crate::pretty::{build_pretty_print, evaluation_pretty_print};
 
-pub fn run(client: &HydraClient, query: &str, to_json: bool) -> OpResult {
+pub fn run(client: &HydraClient, host: &str, query: &str, to_json: bool) -> OpResult {
     let mut res: Search = client.search(query)?;
 
     if res.builds.is_empty() {
@@ -37,12 +37,7 @@ pub fn run(client: &HydraClient, query: &str, to_json: bool) -> OpResult {
 
         println!("Inputs:");
         evaluation_pretty_print(&reproduce.eval);
-        println!(
-            "{:14} {}/build/{}",
-            "Hydra url",
-            client.host(),
-            reproduce.build.id
-        );
+        println!("{:14} {}/build/{}", "Hydra url", host, reproduce.build.id);
     }
     ok_msg("reproduce info created")
 }

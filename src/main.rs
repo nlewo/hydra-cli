@@ -1,12 +1,11 @@
 extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
-use hydra_cli::hydra::client::HydraRestClient;
+use hydra_cli::hydra::reqwest_client::Client as ReqwestHydraClient;
 use hydra_cli::ops::{
     jobset_create, jobset_wait, project, project_create, project_list, reproduce, search, OpError,
     OpResult,
 };
-use reqwest::Client as ReqwestClient;
 
 fn main() {
     let app = App::new("hydra-cli")
@@ -149,7 +148,7 @@ fn main() {
         .cookie_store(true)
         .build()
         .unwrap();
-    let client: HydraRestClient<ReqwestClient> = HydraRestClient::new(c, String::from(host));
+    let client = ReqwestHydraClient::new(c, String::from(host));
 
     let cmd_res: OpResult = match matches.subcommand() {
         ("search", Some(args)) => search::run(
@@ -160,6 +159,7 @@ fn main() {
 
         ("reproduce", Some(args)) => reproduce::run(
             &client,
+            host,
             args.value_of("query").unwrap(),
             args.is_present("json"),
         ),

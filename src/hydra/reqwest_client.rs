@@ -13,9 +13,15 @@ impl From<reqwest::Error> for ClientError {
     }
 }
 
-impl HydraRestClient<ReqwestClient> {
-    pub fn new(client: ReqwestClient, host: String) -> HydraRestClient<ReqwestClient> {
-        HydraRestClient { client, host }
+#[derive(Clone)]
+pub struct Client {
+    pub host: String,
+    pub client: ReqwestClient,
+}
+
+impl Client {
+    pub fn new(client: ReqwestClient, host: String) -> Client {
+        Client { client, host }
     }
 }
 
@@ -37,13 +43,9 @@ fn get_json<T: DeserializeOwned>(client: &ReqwestClient, url: &str) -> Result<T,
     }
 }
 
-impl HydraClient for HydraRestClient<ReqwestClient> {
-    fn host(&self) -> String {
-        self.host.clone()
-    }
-
+impl HydraClient for Client {
     fn project_create(&self, name: &str) -> Result<(), ClientError> {
-        let create_proj_url = format!("{}/project/{}", &self.host(), name);
+        let create_proj_url = format!("{}/project/{}", &self.host, name);
         let proj: ProjectConfig = ProjectConfig {
             displayname: String::from(name),
             enabled: true,
@@ -52,7 +54,7 @@ impl HydraClient for HydraRestClient<ReqwestClient> {
         let res = self
             .client
             .put(&create_proj_url)
-            .header(REFERER, self.host.clone())
+            .header(REFERER, self.host.as_str())
             .json(&proj)
             .send()?;
 
@@ -97,7 +99,7 @@ impl HydraClient for HydraRestClient<ReqwestClient> {
         let res = self
             .client
             .put(&request_url)
-            .header(REFERER, self.host.clone())
+            .header(REFERER, self.host.as_str())
             .json(&jobset_config)
             .send()?;
 
@@ -121,7 +123,7 @@ impl HydraClient for HydraRestClient<ReqwestClient> {
         let login_res = self
             .client
             .post(&login_request_url)
-            .header(REFERER, self.host.clone())
+            .header(REFERER, self.host.as_str())
             .json(&creds)
             .send();
 
