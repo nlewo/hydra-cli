@@ -4,6 +4,7 @@ use reqwest::header::REFERER;
 use reqwest::Client as ReqwestClient;
 use serde::de::DeserializeOwned;
 use serde_json::Value;
+#[cfg(test)]
 use std::collections::HashMap;
 
 #[cfg(test)]

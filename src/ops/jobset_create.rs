@@ -8,7 +8,7 @@ fn load_config(config_path: &str) -> JobsetConfig {
 }
 
 pub fn run(
-    client: &HydraClient,
+    client: &dyn HydraClient,
     config_path: &str,
     project_name: &str,
     jobset_name: &str,

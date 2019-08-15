@@ -20,7 +20,7 @@ pub fn render_response(res: std::vec::Vec<JobsetOverview>) {
     table.printstd();
 }
 
-pub fn run(client: &HydraClient, project: &str, to_json: bool) -> OpResult {
+pub fn run(client: &dyn HydraClient, project: &str, to_json: bool) -> OpResult {
     let res = client.jobset_overview(project)?;
     if to_json {
         println!("{}", serde_json::to_string_pretty(&res).unwrap())

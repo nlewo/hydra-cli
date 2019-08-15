@@ -10,7 +10,7 @@ fn print_result(s: Search, limit: usize) {
         build_pretty_print(&s.builds[i]);
     }
 }
-pub fn run(client: &HydraClient, query: &str, limit: usize) -> OpResult {
+pub fn run(client: &dyn HydraClient, query: &str, limit: usize) -> OpResult {
     let res = client.search(query);
     match res {
         Ok(x) => print_result(x, limit),
