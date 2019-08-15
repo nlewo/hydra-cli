@@ -115,14 +115,6 @@ impl HydraClient for Client {
 
     fn login(&self, creds: Creds) -> Result<(), ClientError> {
         let login_request_url = format!("{}/login", &self.host);
-        let creds: HashMap<String, String> = [
-            (String::from("username"), creds.user),
-            (String::from("password"), creds.password),
-        ]
-        .iter()
-        .cloned()
-        .collect();
-
         let login_res = self
             .client
             .post(&login_request_url)
@@ -226,7 +218,7 @@ mod tests {
             .create();
 
         let res = client().login(Creds {
-            user: "user".to_string(),
+            username: "user".to_string(),
             password: "pw".to_string(),
         });
         assert_eq!(res.unwrap(), ())
@@ -242,7 +234,7 @@ mod tests {
             .create();
 
         let res = client().login(Creds {
-            user: "user".to_string(),
+            username: "user".to_string(),
             password: "pw".to_string(),
         });
 

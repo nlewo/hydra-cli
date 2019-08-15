@@ -17,7 +17,7 @@ pub fn run(
 ) -> OpResult {
     let jobset_cfg = load_config(config_path);
     let creds = Creds {
-        user: String::from(user),
+        username: String::from(user),
         password: String::from(password),
     };
 

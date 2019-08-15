@@ -3,7 +3,7 @@ use crate::ops::{ok_msg, OpResult};
 
 pub fn run(client: &HydraClient, project_name: &str, user: &str, password: &str) -> OpResult {
     let creds = Creds {
-        user: String::from(user),
+        username: String::from(user),
         password: String::from(password),
     };
 
