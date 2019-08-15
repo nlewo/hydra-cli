@@ -1,10 +1,9 @@
-use crate::hydra::{Reproduce, Search};
+use crate::hydra::client::{HydraClient, Reproduce, Search};
 use crate::ops::{ok_msg, OpResult};
 use crate::pretty::{build_pretty_print, evaluation_pretty_print};
-use crate::query::{eval, jobset, search};
 
-pub fn run(host: &str, query: &str, to_json: bool) -> OpResult {
-    let mut res: Search = search(host, query, 1)?;
+pub fn run(client: &HydraClient, host: &str, query: &str, to_json: bool) -> OpResult {
+    let mut res: Search = client.search(query)?;
 
     if res.builds.is_empty() {
         println!("No builds found. Exiting.");
@@ -15,12 +14,9 @@ pub fn run(host: &str, query: &str, to_json: bool) -> OpResult {
             res.builds.len()
         );
     }
-    let eval = eval(host.to_string(), res.builds[0].jobsetevals[0])?;
-    let jobset = jobset(
-        host.to_string(),
-        res.builds[0].project.to_string(),
-        res.builds[0].jobset.to_string(),
-    )?;
+    let eval = client.eval(res.builds[0].jobsetevals[0])?;
+
+    let jobset = client.jobset(&res.builds[0].project, &res.builds[0].jobset)?;
     let reproduce = Reproduce {
         build: res.builds.swap_remove(0),
         eval,

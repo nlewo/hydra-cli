@@ -1,8 +1,8 @@
-use crate::hydra::{Build, Eval};
+use crate::hydra::client::{Build, Eval};
 use chrono::NaiveDateTime;
 
 #[cfg(test)]
-use crate::hydra::Search;
+use crate::hydra::client::Search;
 #[cfg(test)]
 use std::fs::File;
 #[cfg(test)]

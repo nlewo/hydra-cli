@@ -1,6 +1,6 @@
-use crate::hydra::JobsetOverview;
+use crate::hydra::client::HydraClient;
+use crate::hydra::client::JobsetOverview;
 use crate::ops::{ok, OpError, OpResult};
-use crate::query::jobset_overview;
 use std::io;
 use std::io::Write;
 use std::option::Option;
@@ -46,11 +46,11 @@ fn is_jobset_built(jobset: &JobsetOverview) -> Result<bool, OpError> {
 }
 
 fn jobset_find(
-    host: &str,
+    client: &HydraClient,
     project_name: &str,
     jobset_name: &str,
 ) -> Result<JobsetOverview, OpError> {
-    let jobsets = jobset_overview(host, project_name)?;
+    let jobsets = client.jobset_overview(project_name)?;
     jobsets
         .into_iter()
         .find(|j| j.name == jobset_name)
@@ -73,7 +73,7 @@ fn jobset_find(
 // There are several improvements, such as
 // - use the checkinterval to know when the next evaluation will start
 // - use the push Hydra API to trigger an evaluation (but this needs credentials)
-pub fn run(host: &str, project_name: &str, jobset_name: &str) -> OpResult {
+pub fn run(client: &HydraClient, project_name: &str, jobset_name: &str) -> OpResult {
     enum State {
         WaitingForPreviousEval,
         WaitingForNewEval,
@@ -87,7 +87,7 @@ pub fn run(host: &str, project_name: &str, jobset_name: &str) -> OpResult {
 
     println!("waiting for a potential evaluation to terminate");
     loop {
-        let jobset = jobset_find(host, project_name, jobset_name)?;
+        let jobset = jobset_find(client, project_name, jobset_name)?;
 
         match state {
             State::WaitingForPreviousEval => match evaluation_started_since(&jobset) {
