@@ -1,7 +1,7 @@
 [package]
 name = "hydra-cli"
 version = "0.1.0"
-authors = ["Antoine Eiche <lewo@abesis.fr>"]
+authors = ["Antoine Eiche <lewo@abesis.fr>", "Tobias Pflug <tobias.pflug@gmail.com>"]
 edition = "2018"
 
 [dependencies]
