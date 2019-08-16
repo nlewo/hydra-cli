@@ -1,5 +1,4 @@
 use crate::hydra::client::{HydraClient, Search};
-//use crate::hydra::types::Search;
 use crate::ops::{ok_msg, OpError, OpResult};
 use crate::pretty::build_pretty_print;
 use std::cmp::min;
