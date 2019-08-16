@@ -1,0 +1,37 @@
+From 919195b04f1ed4148e2e6b814741e259d2f1301c Mon Sep 17 00:00:00 2001
+From: tobias pflug <tobias.pflug@gmail.com>
+Date: Fri, 16 Aug 2019 16:03:01 +0200
+Subject: [PATCH] Extend the jobset API response
+
+This adds the following (pre-existing) attributes to the jobset response:
+
+- nrtotal
+- lastcheckedtime
+- starttime
+- checkinterval
+- triggertime
+- fetcherrormsg
+- errortime
+---
+ src/lib/Hydra/Controller/API.pm | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/lib/Hydra/Controller/API.pm b/src/lib/Hydra/Controller/API.pm
+index 45cecfea..1840d1e9 100644
+--- a/src/lib/Hydra/Controller/API.pm
++++ b/src/lib/Hydra/Controller/API.pm
+@@ -81,7 +81,13 @@ sub jobsetToHash {
+         nrscheduled => $jobset->get_column("nrscheduled"),
+         nrsucceeded => $jobset->get_column("nrsucceeded"),
+         nrfailed => $jobset->get_column("nrfailed"),
+-        nrtotal => $jobset->get_column("nrtotal")
++        nrtotal => $jobset->get_column("nrtotal"),
++        lastcheckedtime => $jobset->lastcheckedtime,
++        starttime => $jobset->starttime,
++        checkinterval => $jobset->checkinterval,
++        triggertime => $jobset->triggertime,
++        fetcherrormsg => $jobset->fetcherrormsg,
++        errortime => $jobset->errortime
+     };
+ }
+ 

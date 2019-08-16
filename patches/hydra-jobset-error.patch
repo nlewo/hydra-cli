@@ -1,0 +1,26 @@
+From 453488edd945d3537035eec36c58ee92c013bbcb Mon Sep 17 00:00:00 2001
+From: Antoine Eiche <lewo@abesis.fr>
+Date: Tue, 20 Aug 2019 11:07:43 +0200
+Subject: [PATCH] Add error boolean attribute to jobset API response
+
+This attribute allows to know if an error occurred or not. Note we can
+not use the errormsg attribute because it can be arbitrarily long and
+is excluded from the jobset API response.
+---
+ src/lib/Hydra/Controller/API.pm | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/lib/Hydra/Controller/API.pm b/src/lib/Hydra/Controller/API.pm
+index 1840d1e9..0e49ed2e 100644
+--- a/src/lib/Hydra/Controller/API.pm
++++ b/src/lib/Hydra/Controller/API.pm
+@@ -87,7 +87,8 @@ sub jobsetToHash {
+         checkinterval => $jobset->checkinterval,
+         triggertime => $jobset->triggertime,
+         fetcherrormsg => $jobset->fetcherrormsg,
+-        errortime => $jobset->errortime
++        errortime => $jobset->errortime,
++        error => $jobset->errormsg eq "" ? JSON::false : JSON::true
+     };
+ }
+ 

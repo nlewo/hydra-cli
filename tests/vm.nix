@@ -3,6 +3,9 @@
 let
   testing = import (pkgs.path + /nixos/lib/testing.nix) { system = builtins.currentSystem; };
   makeTest = testing.makeTest;
+  hydra = pkgs.hydra.overrideDerivation(_: {
+    patches = [ ./../patches/hydra-jobset-api.patch ./../patches/hydra-jobset-error.patch ];
+  });
 in
 makeTest {
   name = "hydra";
@@ -17,6 +20,7 @@ makeTest {
         #Hydra needs those settings to start up, so we add something not harmfull.
         hydraURL = "example.com";
         notificationSender = "example@example.com";
+        package = hydra;
       };
       nix = {
         buildMachines = [{
@@ -45,5 +49,6 @@ makeTest {
 
     $machine->succeed("hydra-cli -H http://localhost:3000 project-create test --password admin --user admin");
     $machine->succeed("hydra-cli -H http://localhost:3000 project-list | grep -q test");
+    $machine->succeed("hydra-cli -H http://localhost:3000 project-show test");
   '';
 }
