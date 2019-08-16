@@ -2,7 +2,7 @@ use crate::hydra::client::{HydraClient, Project};
 use crate::ops::{ok_msg, OpResult};
 use prettytable::format;
 
-pub fn run(client: &HydraClient, to_json: bool) -> OpResult {
+pub fn run(client: &dyn HydraClient, to_json: bool) -> OpResult {
     let res: Vec<Project> = client.projects()?;
     if to_json {
         println!("{}", serde_json::to_string_pretty(&res).unwrap())

@@ -17,7 +17,7 @@ pub struct Eval {
     pub jobsetevalinputs: HashMap<String, Input>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 pub struct Project {
     #[serde(deserialize_with = "bool_from_int")]
     pub enabled: bool,
@@ -98,12 +98,12 @@ pub struct JobsetOverview {
 pub struct JobsetConfig {
     pub description: String,
     pub checkinterval: i64,
-    enabled: bool,
-    visible: bool,
-    keepnr: i64,
-    nixexprinput: String,
-    nixexprpath: String,
-    inputs: HashMap<String, Input>,
+    pub enabled: bool,
+    pub visible: bool,
+    pub keepnr: i64,
+    pub nixexprinput: String,
+    pub nixexprpath: String,
+    pub inputs: HashMap<String, Input>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

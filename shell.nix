@@ -13,13 +13,13 @@ let
 in
   pkgs.mkShell {
     buildInputs = [ 
-      pkgs.rustfmt
-      pkgs.direnv
       pkgs.pkg-config
       pkgs.openssl
+      (if devBuild then devRust else prodRust)
+    ] ++ pkgs.stdenv.lib.optionals devBuild [
+      pkgs.rustfmt
+      pkgs.direnv
       pkgs.carnix
-      pkgs.mdsh
       updateCrateDeps
-    ] ++ (if devBuild then devRust else prodRust);
-
+    ];
   }

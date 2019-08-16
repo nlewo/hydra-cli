@@ -46,7 +46,7 @@ fn is_jobset_built(jobset: &JobsetOverview) -> Result<bool, OpError> {
 }
 
 fn jobset_find(
-    client: &HydraClient,
+    client: &dyn HydraClient,
     project_name: &str,
     jobset_name: &str,
 ) -> Result<JobsetOverview, OpError> {
@@ -73,7 +73,7 @@ fn jobset_find(
 // There are several improvements, such as
 // - use the checkinterval to know when the next evaluation will start
 // - use the push Hydra API to trigger an evaluation (but this needs credentials)
-pub fn run(client: &HydraClient, project_name: &str, jobset_name: &str) -> OpResult {
+pub fn run(client: &dyn HydraClient, project_name: &str, jobset_name: &str) -> OpResult {
     enum State {
         WaitingForPreviousEval,
         WaitingForNewEval,

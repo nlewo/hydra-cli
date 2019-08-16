@@ -7,14 +7,17 @@ pub use crate::hydra::types::{
     Build, Eval, Jobset, JobsetConfig, JobsetOverview, Project, ProjectConfig, Reproduce, Search,
 };
 use crate::ops::OpError;
+use serde::Serialize;
 
 /// Stores combination of user and password as required by login
+#[derive(Serialize, Deserialize)]
 pub struct Creds {
-    pub user: String,
+    pub username: String,
     pub password: String,
 }
 
 /// Errors occuring while talking to the hydra endpoint
+#[derive(PartialEq, Debug)]
 pub enum ClientError {
     /// Generic error
     Error(String),

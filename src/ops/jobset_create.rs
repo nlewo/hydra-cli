@@ -8,7 +8,7 @@ fn load_config(config_path: &str) -> JobsetConfig {
 }
 
 pub fn run(
-    client: &HydraClient,
+    client: &dyn HydraClient,
     config_path: &str,
     project_name: &str,
     jobset_name: &str,
@@ -17,7 +17,7 @@ pub fn run(
 ) -> OpResult {
     let jobset_cfg = load_config(config_path);
     let creds = Creds {
-        user: String::from(user),
+        username: String::from(user),
         password: String::from(password),
     };
 

@@ -1,8 +1,14 @@
-language: nix
-if: type = pull_request
-script:
-- echo $TRAVIS_PULL_REQUEST
-- nix-channel --add https://hydra.nix.corp.cloudwatt.com/project/hydra-cli/channel/latest
-- nix-channel --update
-- nix-env -i rust_hydra-cli-0.1.0 --option binary-caches https://cache.nix.corp.cloudwatt.com --option trusted-public-keys 'cache.nix.cloudwatt.com:ApPt6XtZeOQ3hNRTSBQx+m6rd8p04G0DQwz0bZfVPL8='
-- hydra-cli -H https://hydra.nix.corp.cloudwatt.com jobset-wait hydra-cli $TRAVIS_PULL_REQUEST
+matrix:
+    include:
+        - language: nix
+          nix: 2.2.2
+          if: type = pull_request
+          script: 
+            - nix-channel --add https://hydra.nix.corp.cloudwatt.com/project/hydra-cli/channel/latest
+            - nix-channel --update
+            - nix-env -i rust_hydra-cli-0.1.0 --option binary-caches https://cache.nix.corp.cloudwatt.com --option trusted-public-keys 'cache.nix.cloudwatt.com:ApPt6XtZeOQ3hNRTSBQx+m6rd8p04G0DQwz0bZfVPL8='
+            - hydra-cli -H https://hydra.nix.corp.cloudwatt.com jobset-wait hydra-cli $TRAVIS_PULL_REQUEST
+        - language: rust
+          rust: 
+            - stable
+          cache: cargo
