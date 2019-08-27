@@ -90,8 +90,8 @@ pub struct JobsetOverview {
     pub name: String,
     pub nrfailed: i64,
     pub starttime: Option<PosixTimestamp>,
-    pub lastcheckedtime: PosixTimestamp,
-    pub errormsg: String,
+    pub lastcheckedtime: Option<PosixTimestamp>,
+    pub errormsg: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
