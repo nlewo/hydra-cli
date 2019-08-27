@@ -17,11 +17,14 @@ fn evaluation_started_since(jobset: &JobsetOverview) -> Option<Duration> {
 }
 
 fn is_evaluation_finished_after(jobset: &JobsetOverview, start: SystemTime) -> bool {
-    (UNIX_EPOCH + Duration::from_secs(jobset.lastcheckedtime)) > start
+    match jobset.lastcheckedtime {
+        None => false,
+        Some(t) => (UNIX_EPOCH + Duration::from_secs(t)) > start,
+    }
 }
 
 fn is_jobset_built(jobset: &JobsetOverview) -> Result<bool, OpError> {
-    if jobset.errormsg != "" {
+    if jobset.errormsg.clone().map_or(false, |m| m != "") {
         println!();
         Err(OpError::Error(format!(
             "evaluation of jobset {} failed",
