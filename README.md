@@ -226,8 +226,25 @@ the following guidelines before creating PRs:
 - If you are planning to make any considerable changes, you should first present your plans in a GitHub issue so it can be discussed.
 - If you are adding features please consider the possibility of adding a test in [tests/vm.nix](./tests/vm.nix)
 
+#### Updating the README
+
+`hydra-cli` uses [mdsh](https://github.com/zimbatm/mdsh) to create and verify the README.md you are looking at. Changes to the `hydra-cli`
+command syntax will failing tests on [hydra](https://hydra.nix.corp.cloudwatt.com/project/hydra-cli). 
+
+You can execute the tests locally by running:
+
+```
+nix-build -A tests.readme
+```
+
+If you want to update the README.md after having made relevant changes to `hydra-cli` you can do so as follows:
+
+```
+cp $(nix-build -A readme) ./README.md
+```
+
 
 ### License
 
 - Licensed under [MIT](./LICENSE). 
-- The hydra-cli logo has been created using [https://game-icons.net](https://game-icons.net/1x1/lorc/hydra.html).
+- The `hydra-cli` logo has been created using [https://game-icons.net](https://game-icons.net/1x1/lorc/hydra.html).
