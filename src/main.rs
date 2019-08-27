@@ -88,23 +88,19 @@ fn main() {
             SubCommand::with_name("jobset-create")
                 .about("Add jobsets to a project")
                 .arg(
-                    Arg::with_name("config")
-                        .takes_value(true)
-                        .long("config")
-                        .required(true)
-                        .help("Project configuration in JSON"),
-                )
-                .arg(
                     Arg::with_name("project")
-                        .long("project")
                         .required(true)
-                        .takes_value(true)
                         .help("The project to add the jobset to"),
                 )
                 .arg(
                     Arg::with_name("jobset")
                         .required(true)
                         .help("The name of the jobset to create"),
+                )
+                .arg(
+                    Arg::with_name("config")
+                        .required(true)
+                        .help("Project configuration in JSON"),
                 )
                 .arg(
                     Arg::with_name("user")
