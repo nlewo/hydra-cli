@@ -6,7 +6,9 @@
 includes commands for querying and creating projects and jobsets.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/nlewo/hydra-cli/master/logo.png" width="512" height="512">
+    <img src="https://raw.githubusercontent.com/nlewo/hydra-cli/master/logo.png"
+         title="hydra-cli logo from https://game-icons.net/1x1/lorc/hydra.html"
+         width="128" height="128">
 </p>
 
 ## Installation
