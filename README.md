@@ -1,5 +1,7 @@
 # hydra-cli
 
+[![Build Status](https://travis-ci.com/nlewo/hydra-cli.svg?branch=master)](https://travis-ci.com/nlewo/hydra-cli)
+
 `hydra-cli` lets you talk to the JSON API of [hydra](https://nixos.org/hydra) on the command line. It
 includes commands for querying and creating projects and jobsets.
 
