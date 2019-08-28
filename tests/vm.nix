@@ -101,10 +101,10 @@ makeTest {
     $machine->succeed("hydra-cli -H http://localhost:3000 project-create test --password admin --user admin");
     $machine->succeed("hydra-cli -H http://localhost:3000 project-list | grep -q test");
 
-    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create success --password admin --user admin --project test --config ${jobsetSuccess}");
+    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create test success ${jobsetSuccess} --password admin --user admin ");
     $machine->succeed("hydra-cli -H http://localhost:3000 jobset-wait test success");
 
-    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create success --password admin --user admin --project test --config ${jobsetFail}");
+    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create test success ${jobsetFail} --password admin --user admin");
     $machine->fail("hydra-cli -H http://localhost:3000 jobset-wait test fail");
   '';
 }

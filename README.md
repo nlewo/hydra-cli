@@ -141,20 +141,20 @@ hydra-cli-jobset-create
 Add jobsets to a project
 
 USAGE:
-    hydra-cli jobset-create <jobset> --config <config> --password <password> --project <project> --user <user>
+    hydra-cli jobset-create <project> <jobset> <config> --password <password> --user <user>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
 OPTIONS:
-        --config <config>        Project configuration in JSON
         --password <password>    A user password [env: HYDRA_PW=]
-        --project <project>      The project to add the jobset to
         --user <user>            A user name [env: HYDRA_USER=]
 
 ARGS:
-    <jobset>    The name of the jobset to create
+    <project>    The project to add the jobset to
+    <jobset>     The name of the jobset to create
+    <config>     Project configuration in JSON
 ```
 #### jobset-wait
 
