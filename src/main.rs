@@ -85,7 +85,7 @@ fn main() {
                         .takes_value(true)
                         .required(true)
                         .long("password")
-                        .env("HYDRA_PW")
+                        .env("HYDRA_PASSWORD")
                         .help("A user password"),
                 ),
         )
@@ -120,7 +120,7 @@ fn main() {
                         .takes_value(true)
                         .required(true)
                         .long("password")
-                        .env("HYDRA_PW")
+                        .env("HYDRA_PASSWORD")
                         .help("A user password"),
                 ),
         )
