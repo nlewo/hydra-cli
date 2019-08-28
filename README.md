@@ -184,7 +184,6 @@ ARGS:
 #### reproduce
 
 The `reproduce` command retrieves information on how to reproduce a given output-path.
-reproduce it.
 
 `$ hydra-cli reproduce --help`
 ```
