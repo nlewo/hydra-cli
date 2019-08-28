@@ -92,7 +92,7 @@ fn main() {
         )
         .subcommand(
             SubCommand::with_name("jobset-create")
-                .about("Add jobsets to a project")
+                .about("Add a jobset to a project")
                 .arg(
                     Arg::with_name("project")
                         .required(true)
@@ -106,7 +106,7 @@ fn main() {
                 .arg(
                     Arg::with_name("config")
                         .required(true)
-                        .help("Project configuration in JSON"),
+                        .help("Project configuration JSON filepath"),
                 )
                 .arg(
                     Arg::with_name("user")
