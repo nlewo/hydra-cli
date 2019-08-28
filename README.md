@@ -61,11 +61,11 @@ FLAGS:
     -V, --version                 Prints version information
 
 OPTIONS:
-    -H <host>        Hydra host URL [env: HYDRA_HOST=]  [default: https://hydra.nixos.org]
+    -H, --host <host>    Hydra host URL [env: HYDRA_HOST=]  [default: https://hydra.nixos.org]
 
 SUBCOMMANDS:
     help              Prints this message or the help of the given subcommand(s)
-    jobset-create     Add jobsets to a project
+    jobset-create     Add a jobset to a project
     jobset-wait       Wait for jobset completion
     project-create    Create a new project
     project-list      List projects
@@ -93,7 +93,7 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --password <password>    A user password [env: HYDRA_PW=]
+        --password <password>    A user password [env: HYDRA_PASSWORD=]
         --user <user>            A user name [env: HYDRA_USER=]
 
 ARGS:
@@ -143,7 +143,7 @@ The `jobset-create` command creates a new jobset and adds it to the project spec
 `$ hydra-cli jobset-create --help`
 ```
 hydra-cli-jobset-create 
-Add jobsets to a project
+Add a jobset to a project
 
 USAGE:
     hydra-cli jobset-create <project> <jobset> <config> --password <password> --user <user>
@@ -153,13 +153,13 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --password <password>    A user password [env: HYDRA_PW=]
+        --password <password>    A user password [env: HYDRA_PASSWORD=]
         --user <user>            A user name [env: HYDRA_USER=]
 
 ARGS:
     <project>    The project to add the jobset to
     <jobset>     The name of the jobset to create
-    <config>     Project configuration in JSON
+    <config>     Project configuration JSON filepath
 ```
 #### jobset-wait
 
