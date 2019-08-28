@@ -41,7 +41,7 @@ projects and jobsets:
 - [search](#search) Searches for an output path.
 
 By default `hydra-cli` talks to https://hydra.nixos.org. The default can be
-overwritten by setting the `HYDRA_HOST` environment variable or by passing `-H <host>` on the
+overwritten by setting the `HYDRA_HOST` environment variable or by passing `--host <host>` on the
 command line.
 
 ### Commands

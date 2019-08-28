@@ -16,6 +16,7 @@ fn main() {
         .arg(
             Arg::with_name("host")
                 .short("H")
+                .long("host")
                 .default_value("https://hydra.nixos.org")
                 .env("HYDRA_HOST")
                 .help("Hydra host URL"),
