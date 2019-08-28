@@ -20,6 +20,11 @@ fn main() {
                 .env("HYDRA_HOST")
                 .help("Hydra host URL"),
         )
+        .arg(
+            Arg::with_name("no-check-certificate")
+                .long("no-check-certificate")
+                .help("Disable TLS certificate check for the Hydra host"),
+        )
         .subcommand(
             SubCommand::with_name("search")
                 .about("Search by output paths")
@@ -140,8 +145,10 @@ fn main() {
 
     let matches = app.get_matches();
     let host = matches.value_of("host").unwrap();
+    let no_check_certs = matches.is_present("no-check-certificate");
     let c = reqwest::Client::builder()
         .cookie_store(true)
+        .danger_accept_invalid_certs(no_check_certs)
         .build()
         .unwrap();
     let client = ReqwestHydraClient::new(c, String::from(host));
