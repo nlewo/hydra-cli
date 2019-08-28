@@ -49,11 +49,12 @@ lewo
 CLI Hydra client
 
 USAGE:
-    hydra-cli [OPTIONS] [SUBCOMMAND]
+    hydra-cli [FLAGS] [OPTIONS] [SUBCOMMAND]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    -h, --help                    Prints help information
+        --no-check-certificate    Disable TLS certificate check for the Hydra host
+    -V, --version                 Prints version information
 
 OPTIONS:
     -H <host>        Hydra host URL [env: HYDRA_HOST=]  [default: https://hydra.nixos.org]
