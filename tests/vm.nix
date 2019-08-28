@@ -5,12 +5,16 @@ let
   makeTest = testing.makeTest;
 
   hydra = pkgs.hydra.overrideDerivation(_: {
+    # add patches that provide additional attributes to the jobsetoverview response
+    # needed by hydra-cli
     patches = [
-      # Adds attributes to the jobset API endpoints, required by the
-      # jobset-wait command
       (pkgs.fetchurl {
-        url = https://github.com/nlewo/hydra/commit/e8a0cbe6156952307c3b964467124157a17fb205.patch;
-        sha256 = "0jrhxarn1hyma4sv5wi85srplkvhh8zc5h1hxn3190rp2ba3mcnl";
+        url = https://github.com/NixOS/hydra/commit/919195b04f1ed4148e2e6b814741e259d2f1301c.patch;
+        sha256 = "0fi0n76928k91n0jxjxc9i84f03cdj25amnc7brrmycs9z8y2q0r";
+      })
+      (pkgs.fetchurl {
+        url = https://github.com/NixOS/hydra/commit/c8983ca07602eaa21d640c5b473f699f59ed97d7.patch;
+        sha256 = "0s0jsvi6f73y04k4s9422lap28bay0vqhc6xkvgzg5sccwg7ifmi";
       })
     ];
   });
