@@ -9,16 +9,7 @@ let
 in
 rec {
 
-  hydra-cli = ((pkgs.callPackage ./Cargo.nix {
-    cratesIO = pkgs.callPackage ./crates-io.nix {};
-  }).hydra_cli {}).overrideDerivation(_: {
-    src = sources;
-    doCheck = true;
-    checkPhase = ''
-      echo "Checking formatting with 'rustfmt'"
-      find . -name "*.rs" | xargs ${rustfmt}/bin/rustfmt --check
-    '';
-  });
+  hydra-cli = (pkgs.callPackage ./Cargo.nix { }).rootCrate.build;
 
   readme = pkgs.runCommand "build-readme" { buildInputs = [ hydra-cli ]; } "${buildReadme}";
 
