@@ -16,6 +16,7 @@ fn main() {
         .arg(
             Arg::with_name("host")
                 .short("H")
+                .long("host")
                 .default_value("https://hydra.nixos.org")
                 .env("HYDRA_HOST")
                 .help("Hydra host URL"),
@@ -85,13 +86,13 @@ fn main() {
                         .takes_value(true)
                         .required(true)
                         .long("password")
-                        .env("HYDRA_PW")
+                        .env("HYDRA_PASSWORD")
                         .help("A user password"),
                 ),
         )
         .subcommand(
             SubCommand::with_name("jobset-create")
-                .about("Add jobsets to a project")
+                .about("Add a jobset to a project")
                 .arg(
                     Arg::with_name("project")
                         .required(true)
@@ -105,7 +106,7 @@ fn main() {
                 .arg(
                     Arg::with_name("config")
                         .required(true)
-                        .help("Project configuration in JSON"),
+                        .help("Project configuration JSON filepath"),
                 )
                 .arg(
                     Arg::with_name("user")
@@ -120,7 +121,7 @@ fn main() {
                         .takes_value(true)
                         .required(true)
                         .long("password")
-                        .env("HYDRA_PW")
+                        .env("HYDRA_PASSWORD")
                         .help("A user password"),
                 ),
         )

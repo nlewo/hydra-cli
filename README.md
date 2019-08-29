@@ -6,7 +6,9 @@
 includes commands for querying and creating projects and jobsets.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/nlewo/hydra-cli/master/logo.png" width="512" height="512">
+    <img src="https://raw.githubusercontent.com/nlewo/hydra-cli/master/logo.png"
+         title="hydra-cli logo from https://game-icons.net/1x1/lorc/hydra.html"
+         width="128" height="128">
 </p>
 
 ## Installation
@@ -39,7 +41,7 @@ projects and jobsets:
 - [search](#search) Searches for an output path.
 
 By default `hydra-cli` talks to https://hydra.nixos.org. The default can be
-overwritten by setting the `HYDRA_HOST` environment variable or by passing `-H <host>` on the
+overwritten by setting the `HYDRA_HOST` environment variable or by passing `--host <host>` on the
 command line.
 
 ### Commands
@@ -59,11 +61,11 @@ FLAGS:
     -V, --version                 Prints version information
 
 OPTIONS:
-    -H <host>        Hydra host URL [env: HYDRA_HOST=]  [default: https://hydra.nixos.org]
+    -H, --host <host>    Hydra host URL [env: HYDRA_HOST=]  [default: https://hydra.nixos.org]
 
 SUBCOMMANDS:
     help              Prints this message or the help of the given subcommand(s)
-    jobset-create     Add jobsets to a project
+    jobset-create     Add a jobset to a project
     jobset-wait       Wait for jobset completion
     project-create    Create a new project
     project-list      List projects
@@ -91,7 +93,7 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --password <password>    A user password [env: HYDRA_PW=]
+        --password <password>    A user password [env: HYDRA_PASSWORD=]
         --user <user>            A user name [env: HYDRA_USER=]
 
 ARGS:
@@ -141,7 +143,7 @@ The `jobset-create` command creates a new jobset and adds it to the project spec
 `$ hydra-cli jobset-create --help`
 ```
 hydra-cli-jobset-create 
-Add jobsets to a project
+Add a jobset to a project
 
 USAGE:
     hydra-cli jobset-create <project> <jobset> <config> --password <password> --user <user>
@@ -151,13 +153,13 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --password <password>    A user password [env: HYDRA_PW=]
+        --password <password>    A user password [env: HYDRA_PASSWORD=]
         --user <user>            A user name [env: HYDRA_USER=]
 
 ARGS:
     <project>    The project to add the jobset to
     <jobset>     The name of the jobset to create
-    <config>     Project configuration in JSON
+    <config>     Project configuration JSON filepath
 ```
 #### jobset-wait
 
@@ -182,7 +184,6 @@ ARGS:
 #### reproduce
 
 The `reproduce` command retrieves information on how to reproduce a given output-path.
-reproduce it.
 
 `$ hydra-cli reproduce --help`
 ```
