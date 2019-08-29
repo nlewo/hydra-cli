@@ -1,15 +1,15 @@
 {
     "nixpkgs": {
-        "homepage": null,
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/1601f559e89ba71091faa26888711d4dd24c2d4d.tar.gz",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/54f385241e6649128ba963c10314942d73245479.tar.gz",
         "owner": "NixOS",
-        "branch": "nixos-19.03",
+        "branch": "nixpkgs-unstable",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "repo": "nixpkgs-channels",
         "type": "tarball",
-        "sha256": "0iayyz9617mz6424spwbi9qvmcl8hiql42czxg8mi4ycq4p1k0dx",
-        "description": "Nixpkgs/NixOS branches that track the Nixpkgs/NixOS channels",
-        "rev": "1601f559e89ba71091faa26888711d4dd24c2d4d"
+        "sha256": "0bd4v8v4xcdbaiaa59yqprnc6dkb9jv12mb0h5xz7b51687ygh9l",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "rev": "54f385241e6649128ba963c10314942d73245479"
     },
     "nixpkgs-mozilla": {
         "url": "https://github.com/mozilla/nixpkgs-mozilla/archive/200cf0640fd8fdff0e1a342db98c9e31e6f13cd7.tar.gz",
