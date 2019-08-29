@@ -9,7 +9,7 @@ use hydra_cli::ops::{
 
 fn main() {
     let app = App::new("hydra-cli")
-        .version("0.1")
+        .version("0.2.0")
         .about("CLI Hydra client")
         .author("lewo")
         .after_help("A client to query Hydra through its JSON API.")

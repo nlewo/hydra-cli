@@ -48,7 +48,7 @@ command line.
 
 `$ hydra-cli --help`
 ```
-hydra-cli 0.1
+hydra-cli 0.2.0
 lewo
 CLI Hydra client
 
