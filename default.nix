@@ -9,16 +9,21 @@ let
 in
 rec {
 
-  hydra-cli = ((pkgs.callPackage ./Cargo.nix {
-    cratesIO = pkgs.callPackage ./crates-io.nix {};
-  }).hydra_cli {}).overrideDerivation(_: {
+  hydra-cli = pkgs.rustPlatform.buildRustPackage {
+    name = "hydra-cli";
     src = sources;
-    doCheck = true;
-    checkPhase = ''
-      echo "Checking formatting with 'rustfmt'"
-      find . -name "*.rs" | xargs ${rustfmt}/bin/rustfmt --check
+    cargoSha256 = "08amg9j18asj2c4s21nx7ryjrp06jqzjif0xdsywrg8lbqjnbbv3";
+    buildInputs = lib.optionals stdenv.isDarwin [ darwin.apple_sdk.frameworks.Security ];
+    nativeBuildInputs = [
+      pkgconfig
+      openssl
+    ];
+    checkInputs = [ pkgs.rustfmt ];
+    postCheck = ''
+      echo "Checking formatting.."
+      cargo fmt -- --check
     '';
-  });
+  };
 
   readme = pkgs.runCommand "build-readme" { buildInputs = [ hydra-cli ]; } "${buildReadme}";
 
