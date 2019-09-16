@@ -4,21 +4,6 @@ let
   testing = import (pkgs.path + /nixos/lib/testing.nix) { system = builtins.currentSystem; };
   makeTest = testing.makeTest;
 
-  hydra = pkgs.hydra.overrideDerivation(_: {
-    # add patches that provide additional attributes to the jobsetoverview response
-    # needed by hydra-cli
-    patches = [
-      (pkgs.fetchurl {
-        url = https://github.com/NixOS/hydra/commit/919195b04f1ed4148e2e6b814741e259d2f1301c.patch;
-        sha256 = "0fi0n76928k91n0jxjxc9i84f03cdj25amnc7brrmycs9z8y2q0r";
-      })
-      (pkgs.fetchurl {
-        url = https://github.com/NixOS/hydra/commit/c8983ca07602eaa21d640c5b473f699f59ed97d7.patch;
-        sha256 = "0s0jsvi6f73y04k4s9422lap28bay0vqhc6xkvgzg5sccwg7ifmi";
-      })
-    ];
-  });
-
   jobSuccess = pkgs.writeTextDir "job.nix" ''
    { success = builtins.derivation {
        name = "success";
@@ -72,7 +57,7 @@ makeTest {
       environment.systemPackages = [ hydra-cli ];
       services.hydra = {
         enable = true;
-        package = hydra;
+        package = pkgs.hydra;
         #Hydra needs those settings to start up, so we add something not harmfull.
         hydraURL = "example.com";
         notificationSender = "example@example.com";
