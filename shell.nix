@@ -8,7 +8,8 @@ let
   prodRust = [ pkgs.rustc pkgs.cargo ];
   updateCrateDeps = pkgs.writeScriptBin "update-crate-deps" ''
     #!/bin/sh
-    ${pkgs.carnix}/bin/carnix generate-nix --src .
+    nix-shell https://github.com/kolloch/crate2nix/tarball/master --run \
+    'crate2nix generate -n "<nixpkgs>" -f ./Cargo.toml -o Cargo.nix'
   '';
 in
   pkgs.mkShell {
@@ -19,7 +20,6 @@ in
     ] ++ pkgs.stdenv.lib.optionals devBuild [
       pkgs.rustfmt
       pkgs.direnv
-      pkgs.carnix
       updateCrateDeps
     ];
   }
