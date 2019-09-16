@@ -1,25 +1,25 @@
 {
     "nixpkgs": {
-        "homepage": null,
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/1601f559e89ba71091faa26888711d4dd24c2d4d.tar.gz",
-        "owner": "NixOS",
         "branch": "nixos-19.03",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "repo": "nixpkgs-channels",
-        "type": "tarball",
-        "sha256": "0iayyz9617mz6424spwbi9qvmcl8hiql42czxg8mi4ycq4p1k0dx",
         "description": "Nixpkgs/NixOS branches that track the Nixpkgs/NixOS channels",
-        "rev": "1601f559e89ba71091faa26888711d4dd24c2d4d"
+        "homepage": null,
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "2dfae8e22fde5032419c3027964c406508332974",
+        "sha256": "0293j9wib78n5nspywrmd9qkvcqq2vcrclrryxqnaxvj3bs1c0vj",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/2dfae8e22fde5032419c3027964c406508332974.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-mozilla": {
-        "url": "https://github.com/mozilla/nixpkgs-mozilla/archive/200cf0640fd8fdff0e1a342db98c9e31e6f13cd7.tar.gz",
-        "owner": "mozilla",
         "branch": "master",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "repo": "nixpkgs-mozilla",
-        "type": "tarball",
-        "sha256": "1am353ims43ylvay263alchzy3y87r1khnwr0x2fp35qr347bvxi",
         "description": "mozilla related nixpkgs (extends nixos/nixpkgs repo)",
-        "rev": "200cf0640fd8fdff0e1a342db98c9e31e6f13cd7"
+        "owner": "mozilla",
+        "repo": "nixpkgs-mozilla",
+        "rev": "200cf0640fd8fdff0e1a342db98c9e31e6f13cd7",
+        "sha256": "1am353ims43ylvay263alchzy3y87r1khnwr0x2fp35qr347bvxi",
+        "type": "tarball",
+        "url": "https://github.com/mozilla/nixpkgs-mozilla/archive/200cf0640fd8fdff0e1a342db98c9e31e6f13cd7.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
