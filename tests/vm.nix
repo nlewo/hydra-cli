@@ -83,7 +83,7 @@ makeTest {
           systems = [ "x86_64-linux" ];
         }];
 
-        binaryCaches = [];
+        binaryCaches = pkgs.lib.mkForce [];
       };
     };
   testScript = ''
