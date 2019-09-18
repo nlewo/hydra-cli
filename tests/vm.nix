@@ -108,7 +108,7 @@ makeTest {
     $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create test success ${jobsetSuccess} --password admin --user admin ");
     $machine->succeed("hydra-cli -H http://localhost:3000 jobset-wait test success");
 
-    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create test success ${jobsetFail} --password admin --user admin");
+    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create test fail ${jobsetFail} --password admin --user admin");
     $machine->fail("hydra-cli -H http://localhost:3000 jobset-wait test fail");
   '';
 }
