@@ -3,7 +3,22 @@
 with pkgs;
 
 let
-  sources = nix-gitignore.gitignoreSource [ "default.nix" "ci" "tests" "target" ] ./.;
+  # TODO: fix gitignore and replace this by gitignre
+  # See https://github.com/NixOS/nixpkgs/issues/69138
+  sources = builtins.path {
+    name = "hydra-cli-filtered-source";
+    path = ./.;
+    filter = (path: type:
+      baseNameOf path != ".git" &&
+      baseNameOf path != "default.nix" &&
+      baseNameOf path != "ci" &&
+      baseNameOf path != "tests" &&
+      baseNameOf path != "target" &&
+      baseNameOf path != "result" &&
+      (! (pkgs.lib.hasSuffix ".rs.bk" path)) &&
+      (! (pkgs.lib.hasSuffix "~" path))
+    );
+  };
   buildReadme = "${mdsh}/bin/mdsh --input ${sources}/README.md --output $out";
   verifyReadme = "${buildReadme} --frozen && echo 'OK' > $out";
 in
