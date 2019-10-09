@@ -205,21 +205,21 @@ ARGS:
 
 The `search` command searches for a jobset based on the output-path specified.
 
-`$ hydra-cli reproduce --help`
+`$ hydra-cli search --help`
 ```
-hydra-cli-reproduce 
-Retrieve information to reproduce an output path
+hydra-cli-search 
+Search by output paths
 
 USAGE:
-    hydra-cli reproduce [FLAGS] <query>
+    hydra-cli search <query> [limit]
 
 FLAGS:
     -h, --help       Prints help information
-    -j               JSON output
     -V, --version    Prints version information
 
 ARGS:
     <query>    Piece of an output path (hash, name,...)
+    <limit>    How many results to return [default: 10]
 ```
 ### Contributing
 
