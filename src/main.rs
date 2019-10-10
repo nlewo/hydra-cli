@@ -3,8 +3,8 @@ extern crate hydra_cli;
 use clap::{App, Arg, SubCommand};
 use hydra_cli::hydra::reqwest_client::Client as ReqwestHydraClient;
 use hydra_cli::ops::{
-    jobset_create, jobset_wait, project, project_create, project_list, reproduce, search, OpError,
-    OpResult,
+    jobset_create, jobset_eval, jobset_wait, project, project_create, project_list, reproduce,
+    search, OpError, OpResult,
 };
 
 fn main() {
@@ -126,6 +126,20 @@ fn main() {
                 ),
         )
         .subcommand(
+            SubCommand::with_name("jobset-eval")
+                .about("Evaluate a jobset")
+                .arg(
+                    Arg::with_name("project")
+                        .required(true)
+                        .help("The project to evaluate the jobset from"),
+                )
+                .arg(
+                    Arg::with_name("jobset")
+                        .required(true)
+                        .help("The jobset to evaluate"),
+                )
+        )
+        .subcommand(
             SubCommand::with_name("jobset-wait")
                 .about("Wait for jobset completion")
                 .arg(
@@ -190,6 +204,12 @@ fn main() {
             args.value_of("jobset").unwrap(),
             args.value_of("user").unwrap(),
             args.value_of("password").unwrap(),
+        ),
+
+        ("jobset-eval", Some(args)) => jobset_eval::run(
+            &client,
+            args.value_of("project").unwrap(),
+            args.value_of("jobset").unwrap(),
         ),
 
         ("jobset-wait", Some(args)) => jobset_wait::run(

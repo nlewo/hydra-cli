@@ -114,6 +114,25 @@ impl HydraClient for Client {
         }
     }
 
+    fn jobset_eval(
+        &self,
+        project_name: &str,
+        jobset_name: &str,
+    ) -> Result<(), ClientError> {
+        let request_url = format!("{}/api/push?jobsets={}:{}", &self.host, project_name, jobset_name);
+        let res = self
+            .client
+            .put(&request_url)
+            .header(REFERER, self.host.as_str())
+            .send()?;
+
+        if res.status().is_success() {
+            Ok(())
+        } else {
+            Err(ClientError::Error(format!("{}", res.status())))
+        }
+    }
+
     fn login(&self, creds: Creds) -> Result<(), ClientError> {
         let login_request_url = format!("{}/login", &self.host);
         let login_res = self
@@ -289,5 +308,4 @@ mod tests {
             Err(ClientError::Error("500 Internal Server Error".to_string()))
         );
     }
-
 }
