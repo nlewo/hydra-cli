@@ -91,7 +91,7 @@ pub struct JobsetOverview {
     pub nrfailed: i64,
     pub starttime: Option<PosixTimestamp>,
     pub lastcheckedtime: Option<PosixTimestamp>,
-    pub haserrormsg: bool,
+    pub haserrormsg: Option<bool>,
 }
 
 #[derive(PartialEq, Debug)]
