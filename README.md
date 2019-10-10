@@ -66,6 +66,7 @@ OPTIONS:
 SUBCOMMANDS:
     help              Prints this message or the help of the given subcommand(s)
     jobset-create     Add a jobset to a project
+    jobset-eval       Evaluate a jobset
     jobset-wait       Wait for jobset completion
     project-create    Create a new project
     project-list      List projects
@@ -160,6 +161,27 @@ ARGS:
     <project>    The project to add the jobset to
     <jobset>     The name of the jobset to create
     <config>     Project configuration JSON filepath
+```
+#### jobset-eval
+
+The `jobset-eval` command creates a new jobset and adds it to the project specified.
+
+`$ hydra-cli jobset-create --help`
+```
+hydra-cli-jobset-eval
+Evaluate a jobset
+
+USAGE:
+    hydra-cli jobset-eval <project> <jobset>
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    <project>    The project to evaluate the jobset from
+    <jobset>     The jobset to evaluate
+hydra-cli-jobset-create 
 ```
 #### jobset-wait
 
