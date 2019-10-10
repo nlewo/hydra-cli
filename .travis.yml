@@ -4,9 +4,8 @@ matrix:
           nix: 2.2.2
           if: type = pull_request
           script: 
-            - nix-channel --add https://hydra.nix.corp.cloudwatt.com/project/hydra-cli/channel/latest
-            - nix-channel --update
-            - nix-env -i rust_hydra-cli-0.2.0 --option binary-caches https://cache.nix.corp.cloudwatt.com --option trusted-public-keys 'cache.nix.cloudwatt.com:ApPt6XtZeOQ3hNRTSBQx+m6rd8p04G0DQwz0bZfVPL8='
+            # This is because the unstable channel has not been updated yet
+            - nix-env -f https://github.com/NixOS/nixpkgs/archive/1f5fa9a8298ec7411431da981b4f1a79e10f2a8e.tar.gz -i hydra-cli
             - hydra-cli -H https://hydra.nix.corp.cloudwatt.com jobset-wait hydra-cli $TRAVIS_PULL_REQUEST
         - language: rust
           rust: 
