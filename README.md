@@ -166,9 +166,9 @@ ARGS:
 
 The `jobset-eval` command creates a new jobset and adds it to the project specified.
 
-`$ hydra-cli jobset-create --help`
+`$ hydra-cli jobset-eval --help`
 ```
-hydra-cli-jobset-eval
+hydra-cli-jobset-eval 
 Evaluate a jobset
 
 USAGE:
@@ -181,7 +181,6 @@ FLAGS:
 ARGS:
     <project>    The project to evaluate the jobset from
     <jobset>     The jobset to evaluate
-hydra-cli-jobset-create 
 ```
 #### jobset-wait
 
