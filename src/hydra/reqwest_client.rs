@@ -10,6 +10,9 @@ use std::collections::HashMap;
 #[cfg(test)]
 use mockito;
 
+#[cfg(test)]
+use crate::hydra::types::JobsetEnabled;
+
 impl From<reqwest::Error> for ClientError {
     fn from(e: reqwest::Error) -> Self {
         let msg = format!("{}", e);
@@ -268,7 +271,7 @@ mod tests {
         let jobset = JobsetConfig {
             description: "desc".to_string(),
             checkinterval: 100,
-            enabled: true,
+            enabled: JobsetEnabled::Enabled,
             visible: true,
             nixexprinput: "input".to_string(),
             nixexprpath: "path".to_string(),
@@ -289,7 +292,7 @@ mod tests {
         let jobset = JobsetConfig {
             description: "desc".to_string(),
             checkinterval: 100,
-            enabled: true,
+            enabled: JobsetEnabled::Enabled,
             visible: true,
             nixexprinput: "input".to_string(),
             nixexprpath: "path".to_string(),
