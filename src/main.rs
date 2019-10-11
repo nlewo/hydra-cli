@@ -123,6 +123,29 @@ fn main() {
                         .long("password")
                         .env("HYDRA_PASSWORD")
                         .help("A user password"),
+                )
+                .after_help(
+                    "Here is an example JSON config:
+
+    {
+      \"enabled\": 1,
+      \"visible\": true,
+      \"description\": \"hydra-cli master jobset\",
+      \"nixexprinput\": \"src\",
+      \"nixexprpath\": \"default.nix\",
+      \"checkinterval\": 60,
+      \"schedulingshares\": 100,
+      \"enableemail\": false,
+      \"emailoverride\": \"\",
+      \"keepnr\": 3,
+      \"inputs\": {
+        \"src\": {
+          \"type\": \"git\",
+          \"value\": \"https://github.com/nlewo/hydra-cli.git master\",
+          \"emailresponsible\": false
+        }
+      }
+    }",
                 ),
         )
         .subcommand(
