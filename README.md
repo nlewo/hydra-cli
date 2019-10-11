@@ -161,6 +161,28 @@ ARGS:
     <project>    The project to add the jobset to
     <jobset>     The name of the jobset to create
     <config>     Project configuration JSON filepath
+
+Here is an example JSON config:
+
+    {
+      "enabled": 1,
+      "visible": true,
+      "description": "hydra-cli master jobset",
+      "nixexprinput": "src",
+      "nixexprpath": "default.nix",
+      "checkinterval": 60,
+      "schedulingshares": 100,
+      "enableemail": false,
+      "emailoverride": "",
+      "keepnr": 3,
+      "inputs": {
+        "src": {
+          "type": "git",
+          "value": "https://github.com/nlewo/hydra-cli.git master",
+          "emailresponsible": false
+        }
+      }
+    }
 ```
 #### jobset-eval
 
