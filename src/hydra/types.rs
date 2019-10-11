@@ -94,11 +94,18 @@ pub struct JobsetOverview {
     pub haserrormsg: bool,
 }
 
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
+pub enum JobsetEnabled {
+    Disabled = 0,
+    Enabled = 1,
+    OneShot = 2,
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JobsetConfig {
     pub description: String,
     pub checkinterval: i64,
-    pub enabled: bool,
+    pub enabled: JobsetEnabled,
     pub visible: bool,
     pub keepnr: i64,
     pub nixexprinput: String,
