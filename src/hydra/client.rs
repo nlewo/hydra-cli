@@ -57,11 +57,7 @@ pub trait HydraClient {
     ) -> Result<(), ClientError>;
 
     /// Evaluate a jobset called `jobset_name` in the project `project_name`
-    fn jobset_eval(
-        &self,
-        project_name: &str,
-        jobset_name: &str,
-    ) -> Result<(), ClientError>;
+    fn jobset_eval(&self, project_name: &str, jobset_name: &str) -> Result<(), ClientError>;
 
     /// Retrieves information on all jobsets belonging to `project`
     fn jobset_overview(&self, project: &str) -> Result<Vec<JobsetOverview>, ClientError>;

@@ -137,7 +137,7 @@ fn main() {
                     Arg::with_name("jobset")
                         .required(true)
                         .help("The jobset to evaluate"),
-                )
+                ),
         )
         .subcommand(
             SubCommand::with_name("jobset-wait")
