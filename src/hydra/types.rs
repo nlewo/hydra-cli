@@ -1,5 +1,5 @@
 use serde::de::{self, Deserialize, Deserializer, Unexpected};
-use serde::Serialize;
+use serde::{Serialize, Serializer};
 pub use serde_json::Value;
 use std::collections::HashMap;
 
@@ -94,11 +94,42 @@ pub struct JobsetOverview {
     pub haserrormsg: bool,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(PartialEq, Debug)]
+#[repr(u8)]
 pub enum JobsetEnabled {
     Disabled = 0,
     Enabled = 1,
     OneShot = 2,
+}
+
+impl Serialize for JobsetEnabled {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_u8(match self {
+            JobsetEnabled::Disabled => 0,
+            JobsetEnabled::Enabled => 1,
+            JobsetEnabled::OneShot => 2,
+        })
+    }
+}
+
+impl<'de> Deserialize<'de> for JobsetEnabled {
+    fn deserialize<D>(deserializer: D) -> Result<JobsetEnabled, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        match u8::deserialize(deserializer)? {
+            0 => Ok(JobsetEnabled::Disabled),
+            1 => Ok(JobsetEnabled::Enabled),
+            2 => Ok(JobsetEnabled::OneShot),
+            other => Err(de::Error::invalid_value(
+                Unexpected::Unsigned(u64::from(other)),
+                &"zero, one, or two",
+            )),
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
