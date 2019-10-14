@@ -1013,10 +1013,7 @@ rec {
           "cfg-if" = "cfg-if 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)";
           "crc32fast" = "crc32fast 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)";
           "libc" = "libc 0.2.62 (registry+https://github.com/rust-lang/crates.io-index)";
-          "miniz_oxide" = {
-            packageId = "miniz_oxide 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)";
-            target = ((target."arch" == "wasm32") && (!(target."os" == "emscripten")));
-          };
+          "miniz_oxide" = "miniz_oxide 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)";
         };
         features = {
           "default" = [ "rust_backend" ];
