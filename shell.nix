@@ -8,8 +8,8 @@ let
   prodRust = [ pkgs.rustc pkgs.cargo ];
   updateCrateDeps = pkgs.writeScriptBin "update-crate-deps" ''
     #!/bin/sh
-    nix-shell https://github.com/kolloch/crate2nix/tarball/master --run \
-    'crate2nix generate -n "<nixpkgs>" -f ./Cargo.toml -o Cargo.nix'
+    # We need recent patches due to the crate renaming feature
+    nix run -f https://github.com/kolloch/crate2nix/archive/277fe73f64d1ed71051cddaaece1b19319020229.tar.gz -c crate2nix generate -n "<nixpkgs>" -f ./Cargo.toml -o Cargo.nix
   '';
 in
   pkgs.mkShell {
