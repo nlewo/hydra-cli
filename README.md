@@ -164,25 +164,23 @@ ARGS:
 
 Here is an example JSON config:
 
-    {
-      "enabled": 1,
-      "visible": true,
-      "description": "hydra-cli master jobset",
-      "nixexprinput": "src",
-      "nixexprpath": "default.nix",
-      "checkinterval": 60,
-      "schedulingshares": 100,
-      "enableemail": false,
-      "emailoverride": "",
-      "keepnr": 3,
-      "inputs": {
-        "src": {
-          "type": "git",
-          "value": "https://github.com/nlewo/hydra-cli.git master",
-          "emailresponsible": false
-        }
-      }
+{
+  "description": "hydra-cli master jobset",
+  "checkinterval": 60,
+  "enabled": 1,
+  "visible": true,
+  "keepnr": 3,
+  "nixexprinput": "src",
+  "nixexprpath": "default.nix",
+  "inputs": {
+    "src": {
+      "value": "https://github.com/nlewo/hydra-cli.git master",
+      "type": "git",
+      "revision": null,
+      "uri": null
     }
+  }
+}
 ```
 #### jobset-eval
 
