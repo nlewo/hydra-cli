@@ -44,7 +44,7 @@ let
     text = builtins.toJSON {
       inherit description;
       checkinterval = 60;
-      enabled = true;
+      enabled = 1;
       visible = true;
       keepnr = 1;
       nixexprinput = "expr";

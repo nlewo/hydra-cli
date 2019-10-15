@@ -1,6 +1,7 @@
 extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
+use hydra_cli::hydra::example::jobset_config;
 use hydra_cli::hydra::reqwest_client::Client as ReqwestHydraClient;
 use hydra_cli::ops::{
     jobset_create, jobset_eval, jobset_wait, project, project_create, project_list, reproduce,
@@ -8,6 +9,10 @@ use hydra_cli::ops::{
 };
 
 fn main() {
+    let config_after_help = &format!(
+        "Here is an example JSON config:\n\n{}",
+        serde_json::to_string_pretty(&jobset_config()).unwrap()
+    )[..];
     let app = App::new("hydra-cli")
         .version("0.2.0")
         .about("CLI Hydra client")
@@ -123,7 +128,8 @@ fn main() {
                         .long("password")
                         .env("HYDRA_PASSWORD")
                         .help("A user password"),
-                ),
+                )
+                .after_help(config_after_help),
         )
         .subcommand(
             SubCommand::with_name("jobset-eval")
