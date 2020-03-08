@@ -1,6 +1,9 @@
 extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
+use std::str::FromStr;
+use std::time::Duration;
+
 use hydra_cli::hydra::example::jobset_config;
 use hydra_cli::hydra::reqwest_client::Client as ReqwestHydraClient;
 use hydra_cli::ops::{
@@ -157,6 +160,12 @@ fn main() {
                     Arg::with_name("jobset")
                         .required(true)
                         .help("The name of the jobset to wait for"),
+                )
+                .arg(
+                    Arg::with_name("timeout")
+                        .long("timeout")
+                        .takes_value(true)
+                        .help("Maximum time to wait for (in seconds)"),
                 ),
         );
 
@@ -222,6 +231,8 @@ fn main() {
             &client,
             args.value_of("project").unwrap(),
             args.value_of("jobset").unwrap(),
+            args.value_of("timeout")
+                .map(|t| Duration::from_secs(u64::from_str(t).unwrap())),
         ),
 
         _ => {

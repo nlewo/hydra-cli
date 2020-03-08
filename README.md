@@ -212,11 +212,14 @@ hydra-cli-jobset-wait
 Wait for jobset completion
 
 USAGE:
-    hydra-cli jobset-wait <project> <jobset>
+    hydra-cli jobset-wait [OPTIONS] <project> <jobset>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+
+OPTIONS:
+        --timeout <timeout>    Maximum time to wait for (in seconds)
 
 ARGS:
     <project>    The project of the jobset to wait for

@@ -10,10 +10,9 @@ use std::time::{Duration, UNIX_EPOCH};
 
 fn evaluation_started_since(jobset: &JobsetOverview) -> Option<Duration> {
     let starttime = jobset.starttime?;
-    match SystemTime::now().duration_since(UNIX_EPOCH + Duration::from_secs(starttime)) {
-        Ok(n) => Some(n),
-        Err(_) => None,
-    }
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH + Duration::from_secs(starttime))
+        .ok()
 }
 
 fn is_evaluation_finished_after(jobset: &JobsetOverview, start: SystemTime) -> bool {
@@ -76,20 +75,33 @@ fn jobset_find(
 // There are several improvements, such as
 // - use the checkinterval to know when the next evaluation will start
 // - use the push Hydra API to trigger an evaluation (but this needs credentials)
-pub fn run(client: &dyn HydraClient, project_name: &str, jobset_name: &str) -> OpResult {
+pub fn run(
+    client: &dyn HydraClient,
+    project_name: &str,
+    jobset_name: &str,
+    timeout: Option<Duration>,
+) -> OpResult {
     enum State {
         WaitingForPreviousEval,
         WaitingForNewEval,
         Evaluating,
         Building,
     };
-    let sleep = 2;
+    let sleep = Duration::from_secs(2);
     let mut state = State::WaitingForPreviousEval;
     let mut start = SystemTime::now();
+    let timeout_start = start;
     let mut nrscheduled = 0;
 
     println!("waiting for a potential evaluation to terminate");
     loop {
+        match timeout {
+            Some(t) if SystemTime::now().duration_since(timeout_start).unwrap() > t => {
+                return Err(OpError::Error("jobset-wait timeout error".to_string()))
+            }
+            _ => {}
+        }
+
         let jobset = jobset_find(client, project_name, jobset_name)?;
 
         match state {
@@ -135,7 +147,7 @@ pub fn run(client: &dyn HydraClient, project_name: &str, jobset_name: &str) -> O
         }
         print!(".");
         io::stdout().flush().unwrap();
-        thread::sleep(Duration::from_secs(sleep));
+        thread::sleep(sleep);
     }
     ok()
 }
