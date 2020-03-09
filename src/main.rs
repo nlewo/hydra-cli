@@ -255,6 +255,10 @@ fn main() {
             eprintln!("ERROR: {}", m);
             std::process::exit(1)
         }
+        Err(OpError::TimeoutError) => {
+            eprintln!("ERROR: Timeout");
+            std::process::exit(124)
+        }
         Err(OpError::Error(m)) => {
             eprintln!("ERROR: {}", m);
             std::process::exit(1)

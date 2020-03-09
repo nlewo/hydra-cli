@@ -97,7 +97,7 @@ pub fn run(
     loop {
         match timeout {
             Some(t) if SystemTime::now().duration_since(timeout_start).unwrap() > t => {
-                return Err(OpError::Error("jobset-wait timeout error".to_string()))
+                return Err(OpError::TimeoutError)
             }
             _ => {}
         }
