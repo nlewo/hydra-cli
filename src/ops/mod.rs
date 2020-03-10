@@ -10,6 +10,7 @@ pub mod search;
 pub enum OpError {
     AuthError,
     CmdErr,
+    TimeoutError,
     Error(String),
     RequestError(String),
 }
