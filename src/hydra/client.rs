@@ -7,7 +7,7 @@ pub use crate::hydra::types::{
     Build, Eval, Jobset, JobsetConfig, JobsetOverview, Project, ProjectConfig, Reproduce, Search,
 };
 use crate::ops::OpError;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// Stores combination of user and password as required by login
 #[derive(Serialize, Deserialize)]

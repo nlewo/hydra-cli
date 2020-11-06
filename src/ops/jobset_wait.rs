@@ -23,7 +23,7 @@ fn is_evaluation_finished_after(jobset: &JobsetOverview, start: SystemTime) -> b
 }
 
 fn is_jobset_built(jobset: &JobsetOverview) -> Result<bool, OpError> {
-    if jobset.haserrormsg {
+    if jobset.haserrormsg.unwrap_or(false) {
         println!();
         Err(OpError::Error(format!(
             "evaluation of jobset {} failed",

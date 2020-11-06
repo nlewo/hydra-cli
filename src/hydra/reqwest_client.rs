@@ -1,7 +1,7 @@
 use crate::hydra::client::*;
 
+use reqwest::blocking::Client as ReqwestClient;
 use reqwest::header::REFERER;
-use reqwest::Client as ReqwestClient;
 use serde::de::DeserializeOwned;
 use serde_json::Value;
 #[cfg(test)]
@@ -34,7 +34,7 @@ impl Client {
 
 /// Performs a GET request retrieving a deserializable response
 fn get_json<T: DeserializeOwned>(client: &ReqwestClient, url: &str) -> Result<T, ClientError> {
-    let mut res = client
+    let res = client
         .get(url)
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .send()?;
@@ -164,7 +164,7 @@ mod tests {
 
     fn client() -> Client {
         let url = &mockito::server_url();
-        let c = reqwest::Client::builder()
+        let c = reqwest::blocking::Client::builder()
             .cookie_store(true)
             .build()
             .unwrap();
@@ -202,7 +202,7 @@ mod tests {
         assert_eq!(
             res,
             Err(ClientError::Error(
-                "expected value at line 1 column 1".to_string()
+                "error decoding response body: expected value at line 1 column 1".to_string()
             ))
         )
     }

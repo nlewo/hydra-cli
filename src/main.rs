@@ -176,7 +176,7 @@ fn main() {
     let matches = app.get_matches();
     let host = matches.value_of("host").unwrap();
     let no_check_certs = matches.is_present("no-check-certificate");
-    let c = reqwest::Client::builder()
+    let c = reqwest::blocking::Client::builder()
         .cookie_store(true)
         .danger_accept_invalid_certs(no_check_certs)
         .build()

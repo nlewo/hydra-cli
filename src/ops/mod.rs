@@ -19,15 +19,7 @@ pub type OpResult = Result<Option<String>, OpError>;
 
 impl From<reqwest::Error> for OpError {
     fn from(error: reqwest::Error) -> Self {
-        let info = if error.is_client_error() {
-            "client error: "
-        } else if error.is_http() {
-            "http error: "
-        } else if error.is_serialization() {
-            "serialization error: "
-        } else if error.is_server_error() {
-            "server error: "
-        } else if error.is_timeout() {
+        let info = if error.is_timeout() {
             "timeout error: "
         } else {
             ""

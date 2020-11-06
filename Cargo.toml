@@ -6,12 +6,11 @@ edition = "2018"
 license = "MIT"
 
 [dependencies]
-clap = "2.31.2"
-serde_derive = "1.0.92"
-reqwest = "0.9.18"
-serde_json = "1.0.39"
-serde = "1.0.92"
-chrono = "0.4.6"
-log = "0.4.6"
+clap = "2.33.3"
+reqwest = { version = "0.10.8", features = ["blocking", "json", "cookies"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = "0.4.19"
+log = "0.4.11"
 prettytable-rs = "0.8.0"
-mockito = "0.20.0"
+mockito = "0.27.0"

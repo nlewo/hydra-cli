@@ -1,5 +1,5 @@
-use serde::de::{self, Deserialize, Deserializer, Unexpected};
-use serde::{Serialize, Serializer};
+use serde::de::{self, Deserializer, Unexpected};
+use serde::{Deserialize, Serialize, Serializer};
 pub use serde_json::Value;
 use std::collections::HashMap;
 
@@ -91,7 +91,7 @@ pub struct JobsetOverview {
     pub nrfailed: i64,
     pub starttime: Option<PosixTimestamp>,
     pub lastcheckedtime: Option<PosixTimestamp>,
-    pub haserrormsg: bool,
+    pub haserrormsg: Option<bool>,
 }
 
 #[derive(PartialEq, Debug)]

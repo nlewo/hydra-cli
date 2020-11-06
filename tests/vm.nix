@@ -57,7 +57,7 @@ makeTest {
       environment.systemPackages = [ hydra-cli ];
       services.hydra = {
         enable = true;
-        package = pkgs.hydra;
+        package = pkgs.hydra-unstable;
         #Hydra needs those settings to start up, so we add something not harmfull.
         hydraURL = "example.com";
         notificationSender = "example@example.com";
