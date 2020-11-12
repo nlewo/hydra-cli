@@ -64,7 +64,8 @@ fn jobset_find(
         })
 }
 
-// To know if a jobset has been successfully built, four steps are required:
+// To know if a jobset has been successfully built, five steps are required:
+// 0. wait for the jobset creation               : WaitingForJobset
 // 1. ensure a evaluation is not running         : WaitingForPreviousEval
 // 2. wait for a new evaluation to start         : WaitingForNewEval
 // 3. wait for this evaluation to be terminated  : Evaluation
@@ -81,19 +82,21 @@ pub fn run(
     jobset_name: &str,
     timeout: Option<Duration>,
 ) -> OpResult {
+    #[derive(PartialEq)]
     enum State {
+        WaitingForJobset,
         WaitingForPreviousEval,
         WaitingForNewEval,
         Evaluating,
         Building,
     };
     let sleep = Duration::from_secs(2);
-    let mut state = State::WaitingForPreviousEval;
+    let mut state = State::WaitingForJobset;
     let mut start = SystemTime::now();
     let timeout_start = start;
     let mut nrscheduled = 0;
 
-    println!("waiting for a potential evaluation to terminate");
+    println!("waiting for jobset {}/{}", project_name, jobset_name);
     loop {
         match timeout {
             Some(t) if SystemTime::now().duration_since(timeout_start).unwrap() > t => {
@@ -102,49 +105,62 @@ pub fn run(
             _ => {}
         }
 
-        let jobset = jobset_find(client, project_name, jobset_name)?;
-
-        match state {
-            State::WaitingForPreviousEval => match evaluation_started_since(&jobset) {
-                Some(_) => {}
-                None => {
-                    println!("\nwaiting for an new evaluation");
-                    start = SystemTime::now();
-                    state = State::WaitingForNewEval;
+        match jobset_find(client, project_name, jobset_name) {
+            Err(_) => {
+                // The jobset should not disappear if it has already been seen!
+                if state != State::WaitingForJobset {
+                    return Err(OpError::Error(format!(
+                        "jobset {}/{} failed",
+                        project_name, jobset_name
+                    )));
+                }
+            }
+            Ok(jobset) => match state {
+                State::WaitingForJobset => {
+                    state = State::WaitingForPreviousEval;
+                    println!("waiting for a potential evaluation to terminate");
+                }
+                State::WaitingForPreviousEval => match evaluation_started_since(&jobset) {
+                    Some(_) => {}
+                    None => {
+                        println!("\nwaiting for an new evaluation");
+                        start = SystemTime::now();
+                        state = State::WaitingForNewEval;
+                    }
+                },
+                State::WaitingForNewEval => {
+                    if is_evaluation_finished_after(&jobset, start) {
+                        println!("\njobset has been evaluated");
+                        // we skip the evaluation step since the evaluation is already finished
+                        state = State::Building;
+                    } else if let Some(d) = evaluation_started_since(&jobset) {
+                        println!(
+                            "\nevaluation is started since {} seconds",
+                            d.as_secs().to_string()
+                        );
+                        state = State::Evaluating;
+                    }
+                }
+                State::Evaluating => {
+                    if is_evaluation_finished_after(&jobset, start) {
+                        println!("\njobset has been evaluated");
+                        state = State::Building;
+                    }
+                }
+                State::Building => {
+                    if is_jobset_built(&jobset)? {
+                        break;
+                    } else if nrscheduled != jobset.nrscheduled {
+                        nrscheduled = jobset.nrscheduled;
+                        println!(
+                            "\njobset {} has still {} jobs scheduled",
+                            jobset_name.to_string(),
+                            jobset.nrscheduled.to_string()
+                        );
+                    }
                 }
             },
-            State::WaitingForNewEval => {
-                if is_evaluation_finished_after(&jobset, start) {
-                    println!("\njobset has been evaluated");
-                    // we skip the evaluation step since the evaluation is already finished
-                    state = State::Building;
-                } else if let Some(d) = evaluation_started_since(&jobset) {
-                    println!(
-                        "\nevaluation is started since {} seconds",
-                        d.as_secs().to_string()
-                    );
-                    state = State::Evaluating;
-                }
-            }
-            State::Evaluating => {
-                if is_evaluation_finished_after(&jobset, start) {
-                    println!("\njobset has been evaluated");
-                    state = State::Building;
-                }
-            }
-            State::Building => {
-                if is_jobset_built(&jobset)? {
-                    break;
-                } else if nrscheduled != jobset.nrscheduled {
-                    nrscheduled = jobset.nrscheduled;
-                    println!(
-                        "\njobset {} has still {} jobs scheduled",
-                        jobset_name.to_string(),
-                        jobset.nrscheduled.to_string()
-                    );
-                }
-            }
-        }
+        };
         print!(".");
         io::stdout().flush().unwrap();
         thread::sleep(sleep);

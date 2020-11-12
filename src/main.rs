@@ -165,7 +165,7 @@ fn main() {
                     Arg::with_name("timeout")
                         .long("timeout")
                         .takes_value(true)
-                        .help("Maximum time to wait for (in seconds)"),
+                        .help("Maximum time to wait for (in seconds and infinite by default)"),
                 ),
         );
 
