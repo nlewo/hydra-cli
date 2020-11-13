@@ -38,6 +38,9 @@ pub trait HydraClient {
     /// Authenticates with the server using username and password provided by `Creds`
     fn login(&self, creds: Creds) -> Result<(), ClientError>;
 
+    /// Returns the Hydra host
+    fn host(&self) -> String;
+
     /// Searches the host for the nix store path `query`
     fn search(&self, query: &str) -> Result<Search, ClientError>;
 

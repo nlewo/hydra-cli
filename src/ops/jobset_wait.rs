@@ -22,19 +22,25 @@ fn is_evaluation_finished_after(jobset: &JobsetOverview, start: SystemTime) -> b
     }
 }
 
-fn is_jobset_built(jobset: &JobsetOverview) -> Result<bool, OpError> {
+fn is_jobset_built(client: &dyn HydraClient, jobset: &JobsetOverview) -> Result<bool, OpError> {
     if jobset.haserrormsg.unwrap_or(false) {
         println!();
         Err(OpError::Error(format!(
-            "evaluation of jobset {} failed",
+            "evaluation of jobset {} failed; for details: {}/jobset/{}/{}",
+            jobset.name,
+            client.host(),
+            jobset.project,
             jobset.name
         )))
     } else if jobset.nrfailed != 0 {
         println!();
         Err(OpError::Error(format!(
-            "Jobset {} has {} failed jobs",
+            "Jobset {} has {} failed jobs; for details: {}/jobset/{}/{}",
             jobset.name,
-            jobset.nrfailed.to_string()
+            jobset.nrfailed.to_string(),
+            client.host(),
+            jobset.project,
+            jobset.name
         )))
     } else if jobset.nrsucceeded == jobset.nrtotal {
         println!(
@@ -96,7 +102,14 @@ pub fn run(
     let timeout_start = start;
     let mut nrscheduled = 0;
 
-    println!("waiting for jobset {}/{}", project_name, jobset_name);
+    println!(
+        "waiting for jobset {}/{} ({}/jobset/{}/{})",
+        project_name,
+        jobset_name,
+        client.host(),
+        project_name,
+        jobset_name
+    );
     loop {
         match timeout {
             Some(t) if SystemTime::now().duration_since(timeout_start).unwrap() > t => {
@@ -148,7 +161,7 @@ pub fn run(
                     }
                 }
                 State::Building => {
-                    if is_jobset_built(&jobset)? {
+                    if is_jobset_built(client, &jobset)? {
                         break;
                     } else if nrscheduled != jobset.nrscheduled {
                         nrscheduled = jobset.nrscheduled;
