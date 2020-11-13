@@ -219,7 +219,7 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
-        --timeout <timeout>    Maximum time to wait for (in seconds)
+        --timeout <timeout>    Maximum time to wait for (in seconds and infinite by default)
 
 ARGS:
     <project>    The project of the jobset to wait for
