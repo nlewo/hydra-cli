@@ -72,6 +72,9 @@ impl HydraClient for Client {
         }
     }
 
+    fn host(&self) -> String {
+        self.host.clone()
+    }
     fn projects(&self) -> Result<Vec<Project>, ClientError> {
         get_json(&self.client, &self.host)
     }
