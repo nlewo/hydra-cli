@@ -17,7 +17,7 @@ fn main() {
         serde_json::to_string_pretty(&jobset_config()).unwrap()
     )[..];
     let app = App::new("hydra-cli")
-        .version("0.2.0")
+        .version("0.3.0")
         .about("CLI Hydra client")
         .author("lewo")
         .after_help("A client to query Hydra through its JSON API.")
