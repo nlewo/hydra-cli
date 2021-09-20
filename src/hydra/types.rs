@@ -36,10 +36,10 @@ impl de::Visitor<'_> for BoolFromInt {
     type Value = bool;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str("Expecting a boolean either encoded as a u8 or as a bool")
+        formatter.write_str("Expecting a boolean either encoded as an unsigned int or as a bool")
     }
 
-    fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
+    fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
     where
         E: de::Error,
     {
