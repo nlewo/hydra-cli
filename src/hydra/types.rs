@@ -30,18 +30,42 @@ pub struct Project {
     pub jobsets: Vec<String>,
 }
 
+struct BoolFromInt {}
+
+impl de::Visitor<'_> for BoolFromInt {
+    type Value = bool;
+
+    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        formatter.write_str("Expecting a boolean either encoded as a u8 or as a bool")
+    }
+
+    fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        match v {
+            0 => Ok(false),
+            1 => Ok(true),
+            other => Err(de::Error::invalid_value(
+                Unexpected::Unsigned(u64::from(other)),
+                &"zero or one",
+            )),
+        }
+    }
+
+    fn visit_bool<E>(self, v: bool) -> Result<Self::Value, E>
+    where
+        E: de::Error,
+    {
+        Ok(v)
+    }
+}
+
 fn bool_from_int<'de, D>(deserializer: D) -> Result<bool, D::Error>
 where
     D: Deserializer<'de>,
 {
-    match u8::deserialize(deserializer)? {
-        0 => Ok(false),
-        1 => Ok(true),
-        other => Err(de::Error::invalid_value(
-            Unexpected::Unsigned(u64::from(other)),
-            &"zero or one",
-        )),
-    }
+    deserializer.deserialize_any(BoolFromInt {})
 }
 
 #[derive(Serialize, Deserialize, Debug)]
