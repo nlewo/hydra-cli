@@ -95,7 +95,7 @@ pub fn run(
         WaitingForNewEval,
         Evaluating,
         Building,
-    };
+    }
     let sleep = Duration::from_secs(2);
     let mut state = State::WaitingForJobset;
     let mut start = SystemTime::now();
