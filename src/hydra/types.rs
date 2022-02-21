@@ -161,11 +161,16 @@ pub struct JobsetConfig {
     pub description: String,
     pub checkinterval: i64,
     pub enabled: JobsetEnabled,
+    #[serde(skip_serializing_if = "is_not_visible")]
     pub visible: bool,
     pub keepnr: i64,
     pub nixexprinput: String,
     pub nixexprpath: String,
     pub inputs: HashMap<String, Input>,
+}
+
+fn is_not_visible(visible: &bool) -> bool {
+    !visible
 }
 
 #[derive(Serialize, Deserialize, Debug)]
