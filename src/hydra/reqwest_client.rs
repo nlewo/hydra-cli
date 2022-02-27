@@ -151,6 +151,10 @@ impl HydraClient for Client {
             Ok(r) => {
                 if r.status().is_success() {
                     Ok(())
+                } else if r.status() == 500 {
+                    // New hydra gives a 302 redirect to a page that ends up with a 500
+                    // Ideally we would not follow the redirect
+                    Ok(()) // ignore redirect error
                 } else {
                     Err(ClientError::Error(format!("{}", r.status())))
                 }
