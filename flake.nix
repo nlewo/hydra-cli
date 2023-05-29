@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
     crate2nix = {
       url = "github:kolloch/crate2nix";
       flake = false;
