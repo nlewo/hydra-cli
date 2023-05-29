@@ -5,11 +5,11 @@
       url = "github:kolloch/crate2nix";
       flake = false;
     };
-    flake-utils.url = "github:numtide/flake-utils";
+    flakeu.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, crate2nix, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs = { self, nixpkgs, crate2nix, flakeu }:
+    flakeu.lib.eachSystem [flakeu.lib.system.x86_64-linux] (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         crateName = "hydra-cli";
@@ -27,13 +27,27 @@
         };
 
       in {
-        packages.${crateName} = project.rootCrate.build;
+        packages = rec {
+          hydra-cli = project.rootCrate.build;
+          default = hydra-cli;
+        };
 
-        defaultPackage = self.packages.${system}.${crateName};
+        apps = rec {
+          hydra-cli = flakeu.lib.mkApp { drv = self.packages.${system}.${crateName}; };
+          default = hydra-cli;
+        };
 
-        devShell = pkgs.mkShell {
-          inputsFrom = builtins.attrValues self.packages.${system};
-          buildInputs = [ pkgs.cargo pkgs.rust-analyzer pkgs.clippy ];
+        legacyPackages = nixpkgs.legacyPackages.${system};
+
+        devShells = rec {
+          hydra-cli = pkgs.mkShell {
+            inputsFrom = builtins.attrValues self.packages.${system};
+            buildInputs = [ pkgs.cargo pkgs.rust-analyzer pkgs.clippy ];
+          };
+          default = hydra-cli;
+        };
+        checks = {
+          vm = pkgs.callPackage ./tests/vm.nix { hydra-cli = self.packages.${system}.${crateName}; };
         };
       });
 }

@@ -16,7 +16,7 @@
         "type": "github"
       }
     },
-    "flake-utils": {
+    "flakeu": {
       "inputs": {
         "systems": "systems"
       },
@@ -53,7 +53,7 @@
     "root": {
       "inputs": {
         "crate2nix": "crate2nix",
-        "flake-utils": "flake-utils",
+        "flakeu": "flakeu",
         "nixpkgs": "nixpkgs"
       }
     },
