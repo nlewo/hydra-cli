@@ -1,0 +1,41 @@
+name: "Nix build"
+on:
+  pull_request:
+  push:
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    name: Nix checks
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v20
+    # - uses: cachix/cachix-action@v12
+    #   with:
+    #     name: <cachix-username>
+    #     # Chose one: authToken or signingKey - must be added to GitHub Actions secrets in repo settings.
+    #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    #     signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+    - run: nix flake check -L
+
+  build:
+    needs: checks
+    name: ${{ matrix.attribute }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+        attribute:
+          - .#hydra-cli
+          - .#devShells.x86_64-linux.default
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v20
+    # - uses: cachix/cachix-action@v12
+    #   with:
+    #     name: <cachix-username>
+    #     # Chose one: authToken or signingKey - must be added to GitHub Actions secrets in repo settings.
+    #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+    #     signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+    - run: nix build --accept-flake-config "${{matrix.attribute}}" -L
