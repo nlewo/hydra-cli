@@ -43,6 +43,10 @@
           hydra-cli = pkgs.mkShell {
             inputsFrom = builtins.attrValues self.packages.${system};
             buildInputs = [ pkgs.cargo pkgs.rust-analyzer pkgs.clippy ];
+            nativeBuildInputs = [
+              pkgs.openssl
+              pkgs.pkg-config
+            ];
           };
           default = hydra-cli;
         };
