@@ -15,7 +15,7 @@ in
       pkgs.pkg-config
       pkgs.openssl
       (if devBuild then devRust else prodRust)
-    ] ++ pkgs.stdenv.lib.optionals devBuild [
+    ] ++ pkgs.lib.optionals devBuild [
       pkgs.rustfmt
       pkgs.direnv
       updateCrateDeps
