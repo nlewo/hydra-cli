@@ -1,9 +1,6 @@
-{ pkgs, hydra-cli }:
+{ pkgs, system, hydra-cli }:
 
 let
-  testing = import (pkgs.path + /nixos/lib/testing.nix) { system = builtins.currentSystem; };
-  makeTest = testing.makeTest;
-
   jobSuccess = pkgs.writeTextDir "job.nix" ''
    { success = builtins.derivation {
        name = "success";
@@ -47,9 +44,9 @@ let
   jobsetFail = mkJobset "Fail" jobFail;
 
 in
-makeTest {
+pkgs.nixosTest {
   name = "hydra";
-  machine = { pkgs, ... }:
+  nodes.machine = { pkgs, ... }:
     {
       virtualisation.memorySize = 1024;
       time.timeZone = "UTC";
@@ -68,34 +65,34 @@ makeTest {
           systems = [ "x86_64-linux" ];
         }];
 
-        binaryCaches = pkgs.lib.mkForce [];
+        settings.substituters = pkgs.lib.mkForce [];
       };
     };
   testScript = ''
     # let the system boot up
-    $machine->waitForUnit("multi-user.target");
+    machine.wait_for_unit("multi-user.target");
     # test whether the database is running
-    $machine->succeed("systemctl status postgresql.service");
+    machine.succeed("systemctl status postgresql.service");
     # test whether the actual hydra daemons are running
-    $machine->succeed("systemctl status hydra-queue-runner.service");
-    $machine->succeed("systemctl status hydra-init.service");
-    $machine->succeed("systemctl status hydra-evaluator.service");
-    $machine->succeed("systemctl status hydra-send-stats.service");
+    machine.succeed("systemctl status hydra-queue-runner.service");
+    machine.succeed("systemctl status hydra-init.service");
+    machine.succeed("systemctl status hydra-evaluator.service");
+    machine.succeed("systemctl status hydra-send-stats.service");
 
-    $machine->succeed("hydra-create-user admin --role admin --password admin");
+    machine.succeed("hydra-create-user admin --role admin --password admin");
 
     # create a project with a trivial job
-    $machine->waitForOpenPort(3000);
+    machine.wait_for_open_port(3000);
 
-    $machine->succeed("hydra-cli -H http://localhost:3000 project-create test --password admin --user admin");
-    $machine->succeed("hydra-cli -H http://localhost:3000 project-list | grep -q test");
+    machine.succeed("hydra-cli -H http://localhost:3000 project-create test --password admin --user admin");
+    machine.succeed("hydra-cli -H http://localhost:3000 project-list | grep -q test");
 
-    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create test success ${jobsetSuccess} --password admin --user admin ");
-    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-wait test success");
-    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-eval test success");
+    machine.succeed("hydra-cli -H http://localhost:3000 jobset-create test success ${jobsetSuccess} --password admin --user admin ");
+    machine.succeed("hydra-cli -H http://localhost:3000 jobset-wait test success");
+    machine.succeed("hydra-cli -H http://localhost:3000 jobset-eval test success");
 
-    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-create test fail ${jobsetFail} --password admin --user admin");
-    $machine->fail("hydra-cli -H http://localhost:3000 jobset-wait test fail");
-    $machine->succeed("hydra-cli -H http://localhost:3000 jobset-eval test fail");
+    machine.succeed("hydra-cli -H http://localhost:3000 jobset-create test fail ${jobsetFail} --password admin --user admin");
+    machine.fail("hydra-cli -H http://localhost:3000 jobset-wait test fail");
+    machine.succeed("hydra-cli -H http://localhost:3000 jobset-eval test fail");
   '';
 }
