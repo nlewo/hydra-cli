@@ -3,35 +3,14 @@
 with pkgs;
 
 let
-  # TODO: fix gitignore and replace this by gitignre
-  # See https://github.com/NixOS/nixpkgs/issues/69138
-  sources = builtins.path {
-    name = "hydra-cli-filtered-source";
-    path = ./.;
-    filter = (path: type:
-      baseNameOf path != ".git" &&
-      baseNameOf path != "default.nix" &&
-      baseNameOf path != "ci" &&
-      baseNameOf path != "tests" &&
-      baseNameOf path != "target" &&
-      baseNameOf path != "result" &&
-      (! (pkgs.lib.hasSuffix ".rs.bk" path)) &&
-      (! (pkgs.lib.hasSuffix "~" path))
-    );
-  };
-  buildReadme = "${mdsh}/bin/mdsh --input ${sources}/README.md --output $out";
+
+
+  buildReadme = "${mdsh}/bin/mdsh --input ${./README.md} --output $out";
   verifyReadme = "${buildReadme} --frozen && echo 'OK' > $out";
 in
 rec {
 
-  hydra-cli = ((callPackage ./Cargo.nix {}).rootCrate.build).overrideDerivation(_: {
-    src = sources;
-    doCheck = true;
-    checkPhase = ''
-      echo "Checking formatting with 'rustfmt'"
-      find . -name "*.rs" | xargs ${rustfmt}/bin/rustfmt --check
-    '';
-  });
+  hydra-cli = pkgs.callPackage ./package.nix {};
 
   readme = pkgs.runCommand "build-readme" { buildInputs = [ hydra-cli ]; } "${buildReadme}";
 
