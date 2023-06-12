@@ -1,11 +1,7 @@
-{ pkgs ? import ./nix/nixpkgs.nix {} }:
-
-with pkgs;
-
 let
+  pkgs = import ./nix/nixpkgs.nix {};
 
-
-  buildReadme = "${mdsh}/bin/mdsh --input ${./README.md} --output $out";
+  buildReadme = "${pkgs.mdsh}/bin/mdsh --input ${./README.md} --output $out";
   verifyReadme = "${buildReadme} --frozen && echo 'OK' > $out";
 in
 rec {
