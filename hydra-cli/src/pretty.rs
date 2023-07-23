@@ -19,11 +19,20 @@ pub fn evaluation_pretty_print(e: &Eval) {
 
 pub fn build_pretty_print(b: &Build) {
     println!("{:14} {}/{}/{}", "Job", b.project, b.jobset, b.job);
-    println!(
-        "{:14} {}",
-        "Finished at",
-        NaiveDateTime::from_timestamp(b.stoptime, 0),
-    );
+
+    match NaiveDateTime::from_timestamp_opt(b.stoptime, 0) {
+        Some(t) => println!(
+            "{:14} {}",
+            "Finished at",
+            t,
+        ),
+        None => println!(
+            "{:14} {}",
+            "Finished at",
+            b.stoptime,
+        ),
+    }
+
     println!("{:14} {}", "Derviation", b.drvpath);
     println!("{:14}", "Build outputs");
     for (k, v) in &b.buildoutputs {
