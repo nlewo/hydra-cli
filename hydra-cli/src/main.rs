@@ -1,6 +1,7 @@
 extern crate hydra_cli;
 
 use clap::{App, Arg, SubCommand};
+use reqwest::redirect;
 use std::str::FromStr;
 use std::time::Duration;
 
@@ -176,9 +177,13 @@ fn main() {
     let matches = app.get_matches();
     let host = matches.value_of("host").unwrap();
     let no_check_certs = matches.is_present("no-check-certificate");
+
+    let custom = redirect::Policy::none();
+
     let c = reqwest::blocking::Client::builder()
         .cookie_store(true)
         .danger_accept_invalid_certs(no_check_certs)
+        .redirect(custom)
         .build()
         .unwrap();
     let client = ReqwestHydraClient::new(c, String::from(host));

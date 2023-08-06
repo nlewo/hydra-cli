@@ -1,6 +1,6 @@
-/target
+target
 **/*.rs.bk
 *~
-/result
-.git
+result
+result-*
 .gitignore

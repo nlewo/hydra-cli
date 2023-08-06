@@ -3,9 +3,6 @@
 }:
 
 let
-  rustChannel = pkgs.latest.rustChannels.stable;
-  devRust = [ rustChannel.rust ];
-  prodRust = [ pkgs.rustc pkgs.cargo ];
   updateCrateDeps = pkgs.writeShellScriptBin "update-crate-deps" ''
     ${pkgs.crate2nix}/bin/crate2nix generate
   '';
@@ -14,10 +11,12 @@ in
     buildInputs = [
       pkgs.pkg-config
       pkgs.openssl
-      (if devBuild then devRust else prodRust)
-    ] ++ pkgs.stdenv.lib.optionals devBuild [
+      pkgs.rustc
+      pkgs.cargo
+    ] ++ pkgs.lib.optionals devBuild [
       pkgs.rustfmt
       pkgs.direnv
+      pkgs.crate2nix
       updateCrateDeps
     ];
   }

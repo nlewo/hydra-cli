@@ -151,11 +151,13 @@ impl HydraClient for Client {
             Ok(r) => {
                 if r.status().is_success() {
                     Ok(())
+                } else if r.status().is_redirection() {
+                    Ok(())
                 } else {
-                    Err(ClientError::Error(format!("{}", r.status())))
+                    Err(ClientError::Error(format!("Response Error: {}", r.status())))
                 }
             }
-            Err(err) => Err(ClientError::Error(format!("{}", err))),
+            Err(err) => Err(ClientError::Error(format!("Request Error: {}", err))),
         }
     }
 }
@@ -265,7 +267,7 @@ mod tests {
 
         assert_eq!(
             res,
-            Err(ClientError::Error("500 Internal Server Error".to_string()))
+            Err(ClientError::Error("Response Error: 500 Internal Server Error".to_string()))
         );
     }
 
