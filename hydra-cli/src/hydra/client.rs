@@ -59,6 +59,9 @@ pub trait HydraClient {
         jobset_config: &JobsetConfig,
     ) -> Result<(), ClientError>;
 
+    /// Delete a jobset
+    fn jobset_delete(&self, project_name: &str, jobset_name: &str) -> Result<(), ClientError>;
+
     /// Evaluate a jobset called `jobset_name` in the project `project_name`
     fn jobset_eval(&self, project_name: &str, jobset_name: &str) -> Result<(), ClientError>;
 

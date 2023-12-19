@@ -1,7 +1,7 @@
 use crate::hydra::client::*;
 
 use reqwest::blocking::Client as ReqwestClient;
-use reqwest::header::REFERER;
+use reqwest::header::{CONTENT_TYPE, REFERER};
 use serde::de::DeserializeOwned;
 use serde_json::Value;
 #[cfg(test)]
@@ -111,6 +111,22 @@ impl HydraClient for Client {
             .put(&request_url)
             .header(REFERER, self.host.as_str())
             .json(&jobset_config)
+            .send()?;
+
+        if res.status().is_success() {
+            Ok(())
+        } else {
+            Err(ClientError::Error(format!("{}", res.status())))
+        }
+    }
+
+    fn jobset_delete(&self, project_name: &str, jobset_name: &str) -> Result<(), ClientError> {
+        let request_url = format!("{}/jobset/{}/{}", &self.host, project_name, jobset_name);
+        let res = self
+            .client
+            .delete(&request_url)
+            .header(REFERER, self.host.as_str())
+            .header(CONTENT_TYPE, "application/json")
             .send()?;
 
         if res.status().is_success() {

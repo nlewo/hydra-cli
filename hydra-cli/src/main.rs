@@ -8,8 +8,8 @@ use std::time::Duration;
 use hydra_cli::hydra::example::jobset_config;
 use hydra_cli::hydra::reqwest_client::Client as ReqwestHydraClient;
 use hydra_cli::ops::{
-    jobset_create, jobset_eval, jobset_wait, project, project_create, project_list, reproduce,
-    search, OpError, OpResult,
+    jobset_create, jobset_delete, jobset_eval, jobset_wait, project, project_create, project_list,
+    reproduce, search, OpError, OpResult,
 };
 
 fn main() {
@@ -136,6 +136,37 @@ fn main() {
                 .after_help(config_after_help),
         )
         .subcommand(
+            SubCommand::with_name("jobset-delete")
+                .about("Delete a jobset")
+                .arg(
+                    Arg::with_name("project")
+                        .required(true)
+                        .help("The project to add the jobset to"),
+                )
+                .arg(
+                    Arg::with_name("jobset")
+                        .required(true)
+                        .help("The name of the jobset to create"),
+                )
+                .arg(
+                    Arg::with_name("user")
+                        .takes_value(true)
+                        .required(true)
+                        .long("user")
+                        .env("HYDRA_USER")
+                        .help("A user name"),
+                )
+                .arg(
+                    Arg::with_name("password")
+                        .takes_value(true)
+                        .required(true)
+                        .long("password")
+                        .env("HYDRA_PASSWORD")
+                        .help("A user password"),
+                )
+                .after_help(config_after_help),
+        )
+        .subcommand(
             SubCommand::with_name("jobset-eval")
                 .about("Evaluate a jobset")
                 .arg(
@@ -220,6 +251,14 @@ fn main() {
         ("jobset-create", Some(args)) => jobset_create::run(
             &client,
             args.value_of("config").unwrap(),
+            args.value_of("project").unwrap(),
+            args.value_of("jobset").unwrap(),
+            args.value_of("user").unwrap(),
+            args.value_of("password").unwrap(),
+        ),
+
+        ("jobset-delete", Some(args)) => jobset_delete::run(
+            &client,
             args.value_of("project").unwrap(),
             args.value_of("jobset").unwrap(),
             args.value_of("user").unwrap(),
