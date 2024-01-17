@@ -57,17 +57,34 @@ fn jobset_find(
     client: &dyn HydraClient,
     project_name: &str,
     jobset_name: &str,
+    max_retries: u8,
+    sleep: Duration,
 ) -> Result<JobsetOverview, OpError> {
-    let jobsets = client.jobset_overview(project_name)?;
-    jobsets
-        .into_iter()
-        .find(|j| j.name == jobset_name)
-        .ok_or_else(|| {
-            OpError::Error(format!(
-                "Project {} doesn't have a jobset {}",
-                project_name, jobset_name
-            ))
-        })
+    match client.jobset_overview(project_name) {
+        Err(e) => {
+            if max_retries > 0 {
+                thread::sleep(sleep);
+                jobset_find(
+                    client,
+                    project_name,
+                    jobset_name,
+                    max_retries - 1,
+                    sleep * 2,
+                )
+            } else {
+                Err(e.into())
+            }
+        }
+        Ok(jobsets) => jobsets
+            .into_iter()
+            .find(|j| j.name == jobset_name)
+            .ok_or_else(|| {
+                OpError::Error(format!(
+                    "Project {} doesn't have a jobset {}",
+                    project_name, jobset_name
+                ))
+            }),
+    }
 }
 
 // To know if a jobset has been successfully built, five steps are required:
@@ -101,6 +118,7 @@ pub fn run(
     let mut start = SystemTime::now();
     let timeout_start = start;
     let mut nrscheduled = 0;
+    let max_retries = 5;
 
     println!(
         "waiting for jobset {}/{} ({}/jobset/{}/{})",
@@ -117,8 +135,7 @@ pub fn run(
             }
             _ => {}
         }
-
-        match jobset_find(client, project_name, jobset_name) {
+        match jobset_find(client, project_name, jobset_name, max_retries, sleep) {
             Err(_) => {
                 // The jobset should not disappear if it has already been seen!
                 if state != State::WaitingForJobset {
