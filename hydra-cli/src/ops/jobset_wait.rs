@@ -136,7 +136,7 @@ pub fn run(
                 State::WaitingForPreviousEval => match evaluation_started_since(&jobset) {
                     Some(_) => {}
                     None => {
-                        println!("\nwaiting for an new evaluation");
+                        println!("\nwaiting for a new evaluation");
                         start = SystemTime::now();
                         state = State::WaitingForNewEval;
                     }
