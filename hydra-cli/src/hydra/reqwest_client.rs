@@ -1,6 +1,7 @@
 use crate::hydra::client::*;
 
 use reqwest::blocking::Client as ReqwestClient;
+use reqwest::blocking::Response;
 use reqwest::header::{CONTENT_TYPE, REFERER};
 use serde::de::DeserializeOwned;
 use serde_json::Value;
@@ -24,30 +25,86 @@ impl From<reqwest::Error> for ClientError {
 pub struct Client {
     pub host: String,
     pub client: ReqwestClient,
+    pub verbose: bool,
 }
 
 impl Client {
     pub fn new(client: ReqwestClient, host: String) -> Client {
-        Client { client, host }
+        Client::new_with_verbose(client, host, false)
+    }
+
+    pub fn new_with_verbose(client: ReqwestClient, host: String, verbose: bool) -> Client {
+        Client {
+            client,
+            host,
+            verbose,
+        }
+    }
+}
+
+fn log_response(
+    status: reqwest::StatusCode,
+    headers: &[(String, String)],
+    body: &str,
+) {
+    println!("< HTTP {}", status);
+    for (header_name, header_value) in headers.iter() {
+        println!(
+            "< {}: {}",
+            header_name,
+            header_value
+        );
+    }
+    println!("<");
+    print!("{}", body);
+    if !body.ends_with('\n') {
+        println!();
     }
 }
 
 /// Performs a GET request retrieving a deserializable response
-fn get_json<T: DeserializeOwned>(client: &ReqwestClient, url: &str) -> Result<T, ClientError> {
+fn get_json<T: DeserializeOwned>(
+    client: &ReqwestClient,
+    url: &str,
+    verbose: bool,
+) -> Result<T, ClientError> {
     let res = client
         .get(url)
         .header(reqwest::header::CONTENT_TYPE, "application/json")
         .send()?;
+    let (status, body) = read_response_body(res, verbose)?;
 
-    if res.status().is_success() {
-        let v: Value = res.json()?;
+    if status.is_success() {
+        let v: Value = serde_json::from_str(&body)
+            .map_err(|e| ClientError::Error(format!("error decoding response body: {}", e)))?;
         match serde_json::from_value(v) {
             Ok(x) => Ok(x),
             Err(x) => Err(ClientError::InvalidResponse(format!("{}", x))),
         }
     } else {
-        Err(ClientError::Error(format!("{}", res.status())))
+        Err(ClientError::Error(format!("{}", status)))
     }
+}
+
+fn read_response_body(res: Response, verbose: bool) -> Result<(reqwest::StatusCode, String), ClientError> {
+    let status = res.status();
+    let headers = res
+        .headers()
+        .iter()
+        .map(|(name, value)| {
+            (
+                name.as_str().to_string(),
+                value.to_str().unwrap_or("<non-utf8>").to_string(),
+            )
+        })
+        .collect::<Vec<(String, String)>>();
+    let body = res.text()?;
+
+    if verbose {
+        log_response(status, &headers, &body);
+    }
+
+    Ok((status, body))
 }
 
 impl HydraClient for Client {
@@ -64,11 +121,12 @@ impl HydraClient for Client {
             .header(REFERER, self.host.as_str())
             .json(&proj)
             .send()?;
+        let (status, _) = read_response_body(res, self.verbose)?;
 
-        if res.status().is_success() {
+        if status.is_success() {
             Ok(())
         } else {
-            Err(ClientError::Error(format!("{}", res.status())))
+            Err(ClientError::Error(format!("{}", status)))
         }
     }
 
@@ -76,27 +134,27 @@ impl HydraClient for Client {
         self.host.clone()
     }
     fn projects(&self) -> Result<Vec<Project>, ClientError> {
-        get_json(&self.client, &self.host)
+        get_json(&self.client, &self.host, self.verbose)
     }
 
     fn search(&self, query: &str) -> Result<Search, ClientError> {
         let request_url = format!("{}/search?query={}", &self.host, query);
-        get_json(&self.client, &request_url)
+        get_json(&self.client, &request_url, self.verbose)
     }
 
     fn jobset_overview(&self, project: &str) -> Result<Vec<JobsetOverview>, ClientError> {
         let request_url = format!("{}/api/jobsets?project={}", &self.host, project);
-        get_json(&self.client, &request_url)
+        get_json(&self.client, &request_url, self.verbose)
     }
 
     fn jobset(&self, project: &str, jobset: &str) -> Result<Jobset, ClientError> {
         let request_url = format!("{}/jobset/{}/{}", &self.host, project, jobset);
-        get_json(&self.client, &request_url)
+        get_json(&self.client, &request_url, self.verbose)
     }
 
     fn eval(&self, number: i64) -> Result<Eval, ClientError> {
         let request_url = format!("{}/eval/{}", &self.host, number);
-        get_json(&self.client, &request_url)
+        get_json(&self.client, &request_url, self.verbose)
     }
 
     fn jobset_create(
@@ -112,11 +170,12 @@ impl HydraClient for Client {
             .header(REFERER, self.host.as_str())
             .json(&jobset_config)
             .send()?;
+        let (status, _) = read_response_body(res, self.verbose)?;
 
-        if res.status().is_success() {
+        if status.is_success() {
             Ok(())
         } else {
-            Err(ClientError::Error(format!("{}", res.status())))
+            Err(ClientError::Error(format!("{}", status)))
         }
     }
 
@@ -128,11 +187,12 @@ impl HydraClient for Client {
             .header(REFERER, self.host.as_str())
             .header(CONTENT_TYPE, "application/json")
             .send()?;
+        let (status, _) = read_response_body(res, self.verbose)?;
 
-        if res.status().is_success() {
+        if status.is_success() {
             Ok(())
         } else {
-            Err(ClientError::Error(format!("{}", res.status())))
+            Err(ClientError::Error(format!("{}", status)))
         }
     }
 
@@ -146,11 +206,12 @@ impl HydraClient for Client {
             .put(&request_url)
             .header(REFERER, self.host.as_str())
             .send()?;
+        let (status, _) = read_response_body(res, self.verbose)?;
 
-        if res.status().is_success() {
+        if status.is_success() {
             Ok(())
         } else {
-            Err(ClientError::Error(format!("{}", res.status())))
+            Err(ClientError::Error(format!("{}", status)))
         }
     }
 
@@ -165,12 +226,13 @@ impl HydraClient for Client {
 
         match login_res {
             Ok(r) => {
-                if r.status().is_success() {
+                let (status, _) = read_response_body(r, self.verbose)?;
+                if status.is_success() {
                     Ok(())
-                } else if r.status().is_redirection() {
+                } else if status.is_redirection() {
                     Ok(())
                 } else {
-                    Err(ClientError::Error(format!("Response Error: {}", r.status())))
+                    Err(ClientError::Error(format!("Response Error: {}", status)))
                 }
             }
             Err(err) => Err(ClientError::Error(format!("Request Error: {}", err))),
@@ -202,7 +264,7 @@ mod tests {
             .create();
 
         let c = client();
-        let res: Result<Project, ClientError> = get_json(&c.client, &c.host);
+        let res: Result<Project, ClientError> = get_json(&c.client, &c.host, false);
         assert_eq!(
             res,
             Err(ClientError::Error("500 Internal Server Error".to_string()))
@@ -218,7 +280,7 @@ mod tests {
             .create();
 
         let c = client();
-        let res: Result<Vec<Project>, ClientError> = get_json(&c.client, &c.host);
+        let res: Result<Vec<Project>, ClientError> = get_json(&c.client, &c.host, false);
 
         assert_eq!(
             res,

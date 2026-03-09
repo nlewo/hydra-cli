@@ -35,6 +35,11 @@ fn main() {
                 .long("no-check-certificate")
                 .help("Disable TLS certificate check for the Hydra host"),
         )
+        .arg(
+            Arg::with_name("verbose")
+                .long("verbose")
+                .help("Print verbose diagnostics including HTTP responses"),
+        )
         .subcommand(
             SubCommand::with_name("search")
                 .about("Search by output paths")
@@ -208,6 +213,7 @@ fn main() {
     let matches = app.get_matches();
     let host = matches.value_of("host").unwrap();
     let no_check_certs = matches.is_present("no-check-certificate");
+    let verbose = matches.is_present("verbose");
 
     let custom = redirect::Policy::none();
 
@@ -217,7 +223,7 @@ fn main() {
         .redirect(custom)
         .build()
         .unwrap();
-    let client = ReqwestHydraClient::new(c, String::from(host));
+    let client = ReqwestHydraClient::new_with_verbose(c, String::from(host), verbose);
 
     let cmd_res: OpResult = match matches.subcommand() {
         ("search", Some(args)) => search::run(

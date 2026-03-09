@@ -58,6 +58,7 @@ USAGE:
 FLAGS:
     -h, --help                    Prints help information
         --no-check-certificate    Disable TLS certificate check for the Hydra host
+        --verbose                 Print verbose diagnostics including HTTP responses
     -V, --version                 Prints version information
 
 OPTIONS:
@@ -80,6 +81,9 @@ A client to query Hydra through its JSON API.
 
 The `project-create` command creates a new project under the name specified. The created project
 will be _enabled_ and _visible_. _Note_: this command requires user authentication.
+
+Use `--verbose` to print diagnostic output, including full HTTP status, headers, and body for each
+server response during the command.
 
 `$ hydra-cli project-create --help`
 ```
