@@ -164,9 +164,16 @@ pub struct JobsetConfig {
     #[serde(skip_serializing_if = "is_not_visible")]
     pub visible: bool,
     pub keepnr: i64,
-    pub nixexprinput: String,
-    pub nixexprpath: String,
-    pub inputs: HashMap<String, Input>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nixexprinput: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nixexprpath: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inputs: Option<HashMap<String, Input>>,
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub jobset_type: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flake: Option<String>,
 }
 
 fn is_not_visible(visible: &bool) -> bool {

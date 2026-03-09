@@ -182,6 +182,21 @@ Here is an example JSON config:
   }
 }
 ```
+
+For flake-based jobsets, `nixexprinput` can be omitted, but the config must set `type` to `1` and include `flake`:
+
+```
+{
+  "type": 1,
+  "description": "hydra-cli flake jobset",
+  "checkinterval": 60,
+  "enabled": 1,
+  "visible": true,
+  "keepnr": 3,
+  "flake": "github:nlewo/hydra-cli"
+}
+```
+
 #### jobset-eval
 
 The `jobset-eval` command starts the evaluation of a jobset.

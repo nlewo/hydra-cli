@@ -294,10 +294,12 @@ mod tests {
             checkinterval: 100,
             enabled: JobsetEnabled::Enabled,
             visible: true,
-            nixexprinput: "input".to_string(),
-            nixexprpath: "path".to_string(),
+            nixexprinput: Some("input".to_string()),
+            nixexprpath: Some("path".to_string()),
             keepnr: 10,
-            inputs: HashMap::new(),
+            inputs: Some(HashMap::new()),
+            jobset_type: None,
+            flake: None,
         };
         let _m = mock("PUT", "/jobset/foo-project/foo-jobset")
             .with_status(200)
@@ -315,10 +317,12 @@ mod tests {
             checkinterval: 100,
             enabled: JobsetEnabled::Enabled,
             visible: true,
-            nixexprinput: "input".to_string(),
-            nixexprpath: "path".to_string(),
+            nixexprinput: Some("input".to_string()),
+            nixexprpath: Some("path".to_string()),
             keepnr: 10,
-            inputs: HashMap::new(),
+            inputs: Some(HashMap::new()),
+            jobset_type: None,
+            flake: None,
         };
         let _m = mock("PUT", "/jobset/foo-project/foo-jobset")
             .with_status(500)

@@ -10,9 +10,9 @@ pub fn jobset_config() -> JobsetConfig {
         enabled: JobsetEnabled::Enabled,
         visible: true,
         keepnr: 3,
-        nixexprinput: "src".to_string(),
-        nixexprpath: "default.nix".to_string(),
-        inputs: {
+        nixexprinput: Some("src".to_string()),
+        nixexprpath: Some("default.nix".to_string()),
+        inputs: Some({
             let mut map = HashMap::<String, Input>::new();
             let input = Input {
                 value: Some("https://github.com/nlewo/hydra-cli.git master".to_string()),
@@ -22,6 +22,8 @@ pub fn jobset_config() -> JobsetConfig {
             };
             map.insert("src".to_string(), input);
             map
-        },
+        }),
+        jobset_type: None,
+        flake: None,
     }
 }
